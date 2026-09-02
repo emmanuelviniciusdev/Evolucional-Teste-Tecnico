@@ -1,0 +1,101 @@
+TESTE PRATICO - DESENVOLVEDOR(A) PLENO (FRONT-END / REACT)
+===========================================================
+
+Olá! Obrigado por participar do nosso processo seletivo.
+
+Esse teste simula o nosso dia a dia no front: construir telas em React que
+consomem uma API REST. Você não precisa escrever back-end nenhum, a gente
+fornece uma API fake pronta (instruções abaixo).
+
+Prazo: 3 dias corridos a partir do recebimento deste material.
+
+A API FAKE
+----------
+
+Junto com este arquivo vai um db.json. Com o Node instalado, rode na pasta
+onde ele está:
+
+npx json-server@0.17.4 --watch db.json --port 3001
+
+Isso sobe uma API REST em http://localhost:3001 com o recurso /produtos,
+aceitando GET, POST, PUT e DELETE. Alguns recursos úteis do json-server:
+
+- paginação: /produtos?_page=1&_limit=10 (o total de registros vem no
+  header X-Total-Count da resposta)
+- busca por nome: /produtos?nome_like=teclado
+- filtro por campo: /produtos?categoria=Perifericos
+
+A documentação completa está no GitHub do json-server (versão 0.17).
+
+
+O DESAFIO
+---------
+
+Construir um painel de gerenciamento de produtos com as telas abaixo.
+
+1. Listagem de produtos
+   - tabela ou cards, como preferir
+   - busca por nome
+   - filtro por categoria
+   - paginação de verdade (usando a API, não trazendo tudo e fatiando
+     no front), mostrando o total de registros
+   - tem que ficar claro pro usuário quando a tela está carregando,
+     quando deu erro na chamada e quando a busca não retornou nada
+
+2. Detalhe do produto
+   - clicou num produto da lista, vê os dados completos dele
+
+3. Criar e editar produto
+   - formulário com validação:
+     - nome obrigatório, mínimo 3 caracteres
+     - preço obrigatório, maior que zero
+     - estoque obrigatório, zero ou mais
+   - mensagens de erro junto dos campos, não um alert genérico
+   - feedback de sucesso após salvar
+
+4. Excluir produto
+   - com pedido de confirmação antes
+
+
+REQUISITOS TECNICOS
+--------------------
+
+- React 18 ou mais novo. Vite, CRA ou outro setup, à sua escolha.
+- Pode ser JavaScript ou TypeScript. TypeScript conta pontos.
+- As chamadas de API devem estar centralizadas em um lugar só (um service,
+  um hook, o desenho é seu), não espalhadas com fetch solto dentro dos
+  componentes.
+- Componentização faz parte da avaliação: um arquivo único de 800 linhas
+  vai pesar contra.
+- Biblioteca de componentes visuais (MUI, Ant, etc) pode, mas não precisa.
+  A gente avalia o seu código, não a beleza do CSS. Uma tela simples e
+  organizada é suficiente.
+
+Itens bônus (não obrigatórios, contam pontos):
+
+- TypeScript bem usado (tipos pros produtos e pras respostas da API)
+- debounce na busca por nome
+- testes com React Testing Library (nem que seja de um componente)
+- React Router com URLs refletindo o estado (ex: página e busca na URL)
+
+
+ENTREGA
+-------
+
+- Repositório no GitHub (público ou nos convide) ou um zip do projeto.
+- README com o passo a passo: como instalar, como subir a API fake e como
+  rodar o projeto.
+- Faça commits ao longo do desenvolvimento. A gente olha o histórico.
+  Um commit único com tudo pronto conta contra você.
+- Se não der tempo de fazer tudo, entregue o que tiver e explique no
+  README o que faltou e como faria. Entrega parcial bem explicada vale
+  mais que entrega completa mal feita.
+
+Sobre uso de ferramentas: pode usar Google, Stack Overflow e IA, como no
+seu dia a dia normal. Aviso honesto: quem passar dessa etapa vai conversar
+com o time sobre o código entregue e fazer um teste ao vivo, sem consulta.
+Então entregue algo que você domine de verdade.
+
+Qualquer dúvida, responde o e-mail que a gente esclarece.
+
+Boa sorte!

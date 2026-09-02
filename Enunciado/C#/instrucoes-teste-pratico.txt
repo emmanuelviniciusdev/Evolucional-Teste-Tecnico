@@ -1,0 +1,99 @@
+TESTE PRATICO - DESENVOLVEDOR(A) .NET PLENO (BACK-END)
+=======================================================
+
+Olá! Obrigado por participar do nosso processo seletivo.
+
+Esse teste simula um pedaço do nosso dia a dia. Nosso sistema principal roda
+em .NET Framework 4.8 (não é .NET Core), com ASP.NET Web API, SQL Server e
+Dapper com SQL escrito na mão. O teste segue exatamente essa stack, então
+leia os requisitos técnicos com atenção antes de começar.
+
+Prazo: 3 dias corridos a partir do recebimento deste material.
+
+O DESAFIO
+---------
+
+Você vai construir uma API de controle de matrículas de uma escola. O script
+de criação do banco está no arquivo script-banco.sql, junto com este arquivo.
+Ele cria três tabelas (Aluno, Turma e Matricula) e já insere alguns dados de
+exemplo. Pode ajustar o script se achar necessário, desde que explique o
+motivo no README.
+
+Endpoints obrigatórios:
+
+1. CRUD de alunos
+   - GET /api/alunos -> lista paginada, com filtro opcional por nome
+     (a resposta deve informar o total de registros de alguma forma)
+   - GET /api/alunos/{id}
+   - POST /api/alunos
+   - PUT /api/alunos/{id}
+   - DELETE /api/alunos/{id} -> exclusão lógica (campo Ativo), não apagar
+     o registro do banco
+
+2. Turmas
+   - GET /api/turmas -> lista as turmas com a quantidade de vagas restantes
+     de cada uma
+
+3. Matrícula (o coração do teste)
+   - POST /api/matriculas -> recebe o id do aluno e o id da turma
+   Regras de negócio:
+   - a turma precisa ter vaga disponível
+   - o aluno precisa estar ativo
+   - o aluno não pode estar matriculado duas vezes na mesma turma
+   - a operação insere o registro na tabela Matricula e decrementa o campo
+     VagasDisponiveis da turma. As duas coisas precisam acontecer dentro de
+     uma transação: ou tudo funciona, ou nada é gravado.
+
+4. Relatório
+   - GET /api/relatorios/alunos-por-turma -> retorna, por turma, o nome da
+     turma, a quantidade de alunos matriculados e as vagas restantes.
+     Essa consulta deve ser feita com SQL (JOIN, GROUP BY, o que precisar),
+     não montando o resultado em memória no C#.
+
+
+REQUISITOS TECNICOS (não negociáveis)
+--------------------------------------
+
+- .NET Framework 4.8 com ASP.NET Web API. Não usar .NET Core / .NET 5+.
+- Acesso a dados com Dapper e SQL escrito na mão. Não usar Entity Framework
+  nem nenhum outro ORM que gere SQL pra você.
+- SQL Server (qualquer edição, o Express e o LocalDB servem).
+- Retornar os status HTTP corretos: 200/201 pra sucesso, 400 pra requisição
+  inválida, 404 pra registro não encontrado, 409 quando a regra de negócio
+  impedir a operação (ex: turma sem vaga). Não devolver 500 pra erro de
+  validação.
+- Organizar o projeto em camadas. O desenho é livre (Controller, Service,
+  Repository ou o que preferir), mas regra de negócio dentro de controller
+  vai pesar contra.
+
+Itens bônus (não são obrigatórios, mas contam pontos):
+
+- Cache com Redis na listagem de turmas, com invalidação quando uma
+  matrícula é feita. Se não tiver Redis instalado, pode abstrair por trás
+  de uma interface e deixar uma implementação em memória, explicando no
+  README como seria com Redis de verdade.
+- Testes unitários da regra de matrícula.
+- Uma tela simples (HTML + jQuery serve) que consuma a listagem de alunos.
+
+
+ENTREGA
+-------
+
+- Repositório no GitHub (público ou nos convide) ou um zip do projeto.
+- README com o passo a passo pra rodar: como criar o banco, connection
+  string, como testar os endpoints.
+- Faça commits ao longo do desenvolvimento. A gente olha o histórico pra
+  entender como você trabalhou. Um commit único com o projeto pronto conta
+  contra você.
+- Se não der tempo de fazer tudo, entregue o que tiver e escreva no README
+  o que ficou faltando e como você faria. Entrega parcial bem explicada
+  vale mais que entrega completa mal feita.
+
+Sobre uso de ferramentas: pode usar Google, Stack Overflow e IA, como no seu
+dia a dia normal. Só um aviso honesto: quem passar dessa etapa vai conversar
+com o time sobre o código entregue e fazer um teste ao vivo, sem consulta.
+Então entregue algo que você domine de verdade.
+
+Qualquer dúvida sobre o enunciado, responde o e-mail que a gente esclarece.
+
+Boa sorte!
