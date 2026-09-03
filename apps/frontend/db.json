@@ -1,0 +1,26 @@
+{
+  "produtos": [
+    { "id": 1,  "nome": "Teclado Mecanico TKL",        "categoria": "Perifericos",  "preco": 349.90,  "estoque": 15, "ativo": true },
+    { "id": 2,  "nome": "Mouse Gamer 16000dpi",        "categoria": "Perifericos",  "preco": 189.90,  "estoque": 32, "ativo": true },
+    { "id": 3,  "nome": "Monitor 27 144hz",            "categoria": "Monitores",    "preco": 1499.00, "estoque": 8,  "ativo": true },
+    { "id": 4,  "nome": "Monitor 24 75hz",             "categoria": "Monitores",    "preco": 749.00,  "estoque": 0,  "ativo": true },
+    { "id": 5,  "nome": "Headset USB com Microfone",   "categoria": "Audio",        "preco": 259.90,  "estoque": 21, "ativo": true },
+    { "id": 6,  "nome": "Caixa de Som Bluetooth",      "categoria": "Audio",        "preco": 199.90,  "estoque": 12, "ativo": false },
+    { "id": 7,  "nome": "Webcam Full HD",              "categoria": "Perifericos",  "preco": 229.00,  "estoque": 5,  "ativo": true },
+    { "id": 8,  "nome": "SSD NVMe 1TB",                "categoria": "Armazenamento","preco": 449.90,  "estoque": 40, "ativo": true },
+    { "id": 9,  "nome": "SSD SATA 480GB",              "categoria": "Armazenamento","preco": 219.90,  "estoque": 25, "ativo": true },
+    { "id": 10, "nome": "HD Externo 2TB",              "categoria": "Armazenamento","preco": 389.00,  "estoque": 11, "ativo": true },
+    { "id": 11, "nome": "Memoria RAM 16GB DDR4",       "categoria": "Componentes",  "preco": 289.90,  "estoque": 30, "ativo": true },
+    { "id": 12, "nome": "Placa de Video 8GB",          "categoria": "Componentes",  "preco": 2199.00, "estoque": 3,  "ativo": true },
+    { "id": 13, "nome": "Fonte 650W 80 Plus",          "categoria": "Componentes",  "preco": 429.90,  "estoque": 18, "ativo": true },
+    { "id": 14, "nome": "Gabinete Mid Tower",          "categoria": "Componentes",  "preco": 319.00,  "estoque": 9,  "ativo": true },
+    { "id": 15, "nome": "Teclado Sem Fio Compacto",    "categoria": "Perifericos",  "preco": 149.90,  "estoque": 27, "ativo": true },
+    { "id": 16, "nome": "Mousepad Grande",             "categoria": "Perifericos",  "preco": 59.90,   "estoque": 60, "ativo": true },
+    { "id": 17, "nome": "Hub USB-C 6 em 1",            "categoria": "Acessorios",   "preco": 179.90,  "estoque": 14, "ativo": true },
+    { "id": 18, "nome": "Suporte de Monitor Articulado","categoria": "Acessorios",  "preco": 249.00,  "estoque": 7,  "ativo": true },
+    { "id": 19, "nome": "Cadeira Ergonomica",          "categoria": "Acessorios",   "preco": 1299.00, "estoque": 4,  "ativo": true },
+    { "id": 20, "nome": "Microfone Condensador",       "categoria": "Audio",        "preco": 399.90,  "estoque": 6,  "ativo": true },
+    { "id": 21, "nome": "Monitor Ultrawide 34",        "categoria": "Monitores",    "preco": 2499.00, "estoque": 2,  "ativo": true },
+    { "id": 22, "nome": "Adaptador Wi-Fi USB",         "categoria": "Acessorios",   "preco": 89.90,   "estoque": 33, "ativo": false }
+  ]
+}

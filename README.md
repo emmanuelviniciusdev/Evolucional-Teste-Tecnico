@@ -41,3 +41,18 @@ curl http://localhost:5000/api/alunos
 curl http://localhost:5000/api/turmas
 curl -X POST http://localhost:5000/api/matriculas -H "Content-Type: application/json" -d "{\"alunoId\":1,\"turmaId\":2}"
 ```
+
+## Frontend (fundação)
+
+Há uma fundação de SPA React em `apps/frontend` criada para o teste prático de frontend. Ela é independente do backend .NET e usa `json-server` com o `db.json` fornecido para desenvolvimento local.
+
+Para começar com o frontend:
+
+```bash
+cd apps/frontend
+npm install
+npm run dev:all   # inicia json-server em :3001 e Vite em :5173
+```
+
+Playwright e2e, Vitest e lint estão configurados; detalhes e scripts estão em `apps/frontend/README.md`.
+
