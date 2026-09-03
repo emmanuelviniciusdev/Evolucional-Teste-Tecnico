@@ -1,6 +1,28 @@
-# API de matrícula Escola
+# API de matrícula escolar
 
-ASP.NET Web API 2 para um sistema de matrícula escolar: CRUD de alunos, listagem de turmas com cache Redis, matrícula transacional e um relatório SQL. O host roda no Windows (.NET Framework 4.8); SQL Server e Redis sobem no Docker.
+API de controle de matrículas de uma escola, feita para o teste prático de .NET Pleno. A stack segue o enunciado à risca: **.NET Framework 4.8** com **ASP.NET Web API 2**, **SQL Server** acessado por **Dapper** com SQL escrito na mão, e **Redis** como cache. O host roda no Windows; SQL Server e Redis sobem no Docker.
+
+## O que o enunciado pede e onde isso está
+
+Um resumo de como cada requisito obrigatório foi atendido, para facilitar a revisão:
+
+| Requisito do enunciado | Como foi atendido |
+| --- | --- |
+| **CRUD de alunos** (`GET/POST /api/alunos`, `GET/PUT/DELETE /api/alunos/{id}`) | `AlunosController` + `AlunoService` + `AlunoRepository`. A listagem é paginada, aceita filtro opcional por nome e retorna o total de registros no corpo (`total`). |
+| **Exclusão lógica** do aluno (campo `Ativo`) | `DELETE` faz `Ativo = 0`; a row continua no banco. Listagem e busca por id ignoram inativos (404 por id). |
+| **Turmas** (`GET /api/turmas` com vagas restantes) | `TurmasController` + `TurmaService`; as vagas vêm de `VagasDisponiveis`. |
+| **Matrícula** (`POST /api/matriculas`) com regras de negócio | `MatriculaService` valida turma com vaga, aluno ativo e matrícula não duplicada; o insert e o decremento de `VagasDisponiveis` rodam na **mesma transaction**. |
+| **Relatório** (`GET /api/relatorios/alunos-por-turma`) via SQL | `RelatorioRepository` calcula tudo com `LEFT JOIN` + `GROUP BY`, sem montar o resultado em memória. |
+| **Status HTTP corretos** (200/201, 400, 404, 409) | Exceções de domínio (`ValidationException`, `NotFoundException`, `ConflictException`) são traduzidas por um filtro; validação nunca devolve 500. |
+| **Projeto em camadas**, sem regra de negócio no controller | Camadas `Api` → `Aplicacao` → `Dominio` ← `Infraestrutura`, com Autofac na composição. |
+
+Itens bônus do enunciado, todos implementados:
+
+- **Cache com Redis** na listagem de turmas (`turmas:listagem`, TTL de 5 minutes), invalidado após uma matrícula com sucesso. Fica atrás da interface `ICacheService`, então dá para trocar por uma implementação em memória sem tocar no serviço.
+- **Testes unitários** da regra de matrícula (além de outros), em `Escola.Testes.Unitarios`.
+- **Tela simples** que consome a listagem de alunos e ainda cobre o CRUD, matrícula e relatório — servida em [http://localhost:5000/ui](http://localhost:5000/ui).
+
+Nada ficou de fora dos requisitos obrigatórios ou dos bônus.
 
 ## Stack
 
@@ -10,6 +32,12 @@ ASP.NET Web API 2 para um sistema de matrícula escolar: CRUD de alunos, listage
 - Redis via StackExchange.Redis (`ICacheService`)
 - Autofac para composition
 - Swashbuckle 5.6.0 para o Swagger UI
+
+## Demonstração
+
+O fluxo completo de CRUD na tela `/ui` — listar e filtrar alunos, cadastrar, editar, matricular em uma turma, ver o relatório e excluir (desativação lógica):
+
+![Demonstração do CRUD de alunos e matrículas](docs/demonstracao-crud.gif)
 
 ## Requisito Windows
 
@@ -88,6 +116,8 @@ O JSON é camelCase. Bodies de erro usam `{ "error": "<mensagem em pt-BR>" }` co
 
 ### Alunos
 
+CRUD paginado com filtro opcional por nome; o total de registros vem no corpo da resposta.
+
 ```bash
 curl http://localhost:5000/api/alunos
 curl "http://localhost:5000/api/alunos?nome=ana&pagina=1&tamanhoPagina=10"
@@ -101,6 +131,8 @@ curl -X DELETE http://localhost:5000/api/alunos/1
 
 ### Turmas
 
+Lista as turmas com a quantidade de vagas restantes de cada uma.
+
 ```bash
 curl http://localhost:5000/api/turmas
 ```
@@ -109,19 +141,23 @@ As vagas restantes vêm de `VagasDisponiveis`. A listagem fica em cache no Redis
 
 ### Matrículas
 
+Recebe o id do aluno e o id da turma e aplica as regras de negócio do enunciado.
+
 ```bash
 curl -X POST http://localhost:5000/api/matriculas -H "Content-Type: application/json" -d "{\"alunoId\":1,\"turmaId\":2}"
 ```
 
-O insert e o decrement de vagas rodam em uma única transaction. Aluno inativo, sem vagas ou par duplicado retornam HTTP 409.
+O insert e o decrement de vagas rodam em uma única transaction: ou tudo grava, ou nada. Aluno inativo, turma sem vagas ou par aluno/turma duplicado retornam HTTP 409.
 
 ### Relatório
+
+Retorna, por turma, o nome da turma, a quantidade de alunos matriculados e as vagas restantes.
 
 ```bash
 curl http://localhost:5000/api/relatorios/alunos-por-turma
 ```
 
-As contagens são calculadas em SQL (`LEFT JOIN` + `GROUP BY`), incluindo turmas com zero enrollments.
+As contagens são calculadas em SQL (`LEFT JOIN` + `GROUP BY`), incluindo turmas com zero enrollments — nada é montado em memória no C#.
 
 ## Testes
 

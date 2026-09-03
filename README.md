@@ -1,16 +1,40 @@
-# Teste técnico Evolucional
+# Teste técnico Evolucional — API de matrícula escolar
 
-API de matrícula escolar em .NET Framework 4.8.
+Solução do teste prático de .NET Pleno (back-end): uma API de controle de matrículas de uma escola. O enunciado original está em [`Enunciado/C#/instrucoes-teste-pratico.txt`](Enunciado/C%23/instrucoes-teste-pratico.txt).
 
-O backend executável fica em [`apps/backend`](apps/backend). Siga [`apps/backend/README.md`](apps/backend/README.md) para restaurar os packages, subir SQL Server e Redis com Docker, rodar a Web API no Windows, abrir o Swagger em [http://localhost:5000/swagger](http://localhost:5000/swagger), abrir a tela de demonstração em [http://localhost:5000/ui](http://localhost:5000/ui) e chamar as rotas do enunciado:
+A stack segue exatamente o que o enunciado exige: **.NET Framework 4.8** com **ASP.NET Web API 2**, **SQL Server** com **Dapper** e SQL escrito na mão. Redis é usado como cache (item bônus) e há uma tela simples que consome a API.
 
-- `GET/POST /api/alunos`, `GET/PUT/DELETE /api/alunos/{id}`
-- `GET /api/turmas`
-- `POST /api/matriculas`
-- `GET /api/relatorios/alunos-por-turma`
-- `GET /api/health`
+## Onde está cada coisa
 
-Exemplo:
+O backend executável fica em [`apps/backend`](apps/backend). O [`apps/backend/README.md`](apps/backend/README.md) tem o passo a passo completo — restaurar packages, subir SQL Server e Redis com Docker, rodar a Web API no Windows, connection strings e como testar cada endpoint — além de uma tabela mostrando onde cada requisito do enunciado foi atendido.
+
+Resumindo, com a API no ar em [http://localhost:5000](http://localhost:5000) você tem:
+
+- Swagger em [http://localhost:5000/swagger](http://localhost:5000/swagger)
+- Tela de demonstração do CRUD em [http://localhost:5000/ui](http://localhost:5000/ui)
+
+## Requisitos do enunciado
+
+Todos os endpoints obrigatórios e os três itens bônus foram implementados:
+
+- **CRUD de alunos** — `GET/POST /api/alunos`, `GET/PUT/DELETE /api/alunos/{id}` (listagem paginada com filtro por nome e total de registros; DELETE é exclusão lógica).
+- **Turmas** — `GET /api/turmas` com as vagas restantes de cada turma.
+- **Matrícula** — `POST /api/matriculas` com as regras de negócio (turma com vaga, aluno ativo, sem matrícula duplicada) e insert + decremento de vagas na mesma transaction.
+- **Relatório** — `GET /api/relatorios/alunos-por-turma`, calculado em SQL (`JOIN` + `GROUP BY`).
+- **Health check** — `GET /api/health`.
+- **Bônus** — cache Redis na listagem de turmas, testes unitários da regra de matrícula e a tela em `/ui`.
+
+## Passo a passo
+
+Veja [`apps/backend/README.md`](apps/backend/README.md#como-rodar-localmente). Em resumo, a partir de `apps/backend` no Windows:
+
+```bash
+make restore
+make infra-up
+make api-run
+```
+
+Exemplos de chamadas:
 
 ```bash
 curl http://localhost:5000/api/alunos
