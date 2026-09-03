@@ -36,7 +36,7 @@ npm run dev:all
 Testes
 
 - Unit + Integration (Vitest): `npm run test`
-- Playwright e2e: `npm run test:e2e` (ver documentação Playwright para instalar navegadores: `npx playwright install chromium`)
+- Playwright e2e: `npx playwright install chromium` e depois `npm run test:e2e`
 
 Observações
 

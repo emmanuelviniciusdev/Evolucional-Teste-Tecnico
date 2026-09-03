@@ -42,7 +42,7 @@ test('fires onConfirm when the confirm button is clicked', () => {
       onCancel={vi.fn()}
     />,
   )
-  fireEvent.click(screen.getByRole('button', { name: 'Confirmar' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Confirmar', hidden: true }))
   expect(onConfirm).toHaveBeenCalledOnce()
 })
 
@@ -56,7 +56,7 @@ test('fires onCancel when the cancel button is clicked', () => {
       onCancel={onCancel}
     />,
   )
-  fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Cancelar', hidden: true }))
   expect(onCancel).toHaveBeenCalledOnce()
 })
 
@@ -70,6 +70,6 @@ test('does NOT call onConfirm when cancel is clicked', () => {
       onCancel={vi.fn()}
     />,
   )
-  fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Cancelar', hidden: true }))
   expect(onConfirm).not.toHaveBeenCalled()
 })

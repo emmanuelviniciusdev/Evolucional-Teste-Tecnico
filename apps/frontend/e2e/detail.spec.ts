@@ -16,7 +16,8 @@ test.describe('Product detail', () => {
     await expect(page.locator('.product-detail')).toBeVisible({ timeout: 10000 })
 
     // All fields should be visible
-    await expect(page.locator('dt', { hasText: 'Nome' })).toBeVisible()
+    await expect(page.locator('.product-detail h2')).toBeVisible()
+    await expect(page.locator('dt', { hasText: 'ID' })).toBeVisible()
     await expect(page.locator('dt', { hasText: 'Categoria' })).toBeVisible()
     await expect(page.locator('dt', { hasText: 'Preço' })).toBeVisible()
     await expect(page.locator('dt', { hasText: 'Estoque' })).toBeVisible()
@@ -28,7 +29,7 @@ test.describe('Product detail', () => {
     await expect(page.locator('.product-detail')).toBeVisible({ timeout: 10000 })
 
     await page.getByText('← Voltar ao Catálogo').click()
-    await expect(page).toHaveURL('/')
+    await expect(page).toHaveURL((url) => url.pathname === '/')
   })
 
   test('edit link navigates to /produtos/:id/editar', async ({ page }) => {

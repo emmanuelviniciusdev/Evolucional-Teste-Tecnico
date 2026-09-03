@@ -70,7 +70,7 @@ const Home: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const { data: produtos, total, loading, error, } = useProducts({
+  const { data: produtos, total, loading, error, refetch } = useProducts({
     page,
     limit: PAGE_SIZE,
     search: debouncedSearch,
@@ -90,12 +90,10 @@ const Home: React.FC = () => {
     setDeleteTargetId(null)
     if (ok) {
       setDeleteSuccessMsg('Produto excluído com sucesso.')
-      // Refresh: if last item on page and not first page, go back one page
       if (produtos.length === 1 && page > 1) {
         handlePageChange(page - 1)
       } else {
-        // Re-trigger fetch by briefly updating URL (noop setSearchParams to force re-render)
-        setSearchParams((prev) => new URLSearchParams(prev))
+        refetch()
       }
     }
   }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { listProducts, Produto } from '../api/products'
 
 interface UseProductsParams {
@@ -13,6 +13,7 @@ interface UseProductsResult {
   total: number
   loading: boolean
   error: string | null
+  refetch: () => void
 }
 
 export function useProducts({
@@ -25,6 +26,9 @@ export function useProducts({
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [refreshKey, setRefreshKey] = useState(0)
+
+  const refetch = useCallback(() => setRefreshKey((k) => k + 1), [])
 
   useEffect(() => {
     let cancelled = false
@@ -55,7 +59,7 @@ export function useProducts({
     return () => {
       cancelled = true
     }
-  }, [page, limit, search, categoria])
+  }, [page, limit, search, categoria, refreshKey])
 
-  return { data, total, loading, error }
+  return { data, total, loading, error, refetch }
 }

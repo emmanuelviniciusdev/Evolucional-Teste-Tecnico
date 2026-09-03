@@ -8,10 +8,10 @@ test.describe('Create product', () => {
   test.afterEach(async ({ request }) => {
     // Clean up: delete any product created during the test
     if (createdProductName) {
-      const res = await request.get('http://localhost:3001/produtos?nome_like=' + encodeURIComponent(createdProductName))
+      const res = await request.get('http://127.0.0.1:3001/produtos?nome_like=' + encodeURIComponent(createdProductName))
       const products = await res.json() as Array<{ id: number }>
       for (const p of products) {
-        await request.delete(`http://localhost:3001/produtos/${p.id}`)
+        await request.delete(`http://127.0.0.1:3001/produtos/${p.id}`)
       }
     }
   })
@@ -32,7 +32,7 @@ test.describe('Create product', () => {
     await expect(page.getByText('Produto criado com sucesso!')).toBeVisible({ timeout: 5000 })
 
     // Wait for navigation back to list
-    await expect(page).toHaveURL('/', { timeout: 3000 })
+    await expect(page).toHaveURL((url) => url.pathname === '/', { timeout: 3000 })
 
     // Product appears in list (search for it)
     await page.getByRole('searchbox').fill(createdProductName)
@@ -66,7 +66,7 @@ test.describe('Edit product', () => {
   test.beforeEach(async ({ request }) => {
     // Create a fresh product to edit
     editedProductName = `E2E Edit ${timestamp()}`
-    const res = await request.post('http://localhost:3001/produtos', {
+    const res = await request.post('http://127.0.0.1:3001/produtos', {
       data: { nome: editedProductName, categoria: 'Acessorios', preco: 50, estoque: 3, ativo: true },
     })
     const created = await res.json() as { id: number }
@@ -75,7 +75,7 @@ test.describe('Edit product', () => {
 
   test.afterEach(async ({ request }) => {
     // Clean up
-    await request.delete(`http://localhost:3001/produtos/${targetId}`).catch(() => {})
+    await request.delete(`http://127.0.0.1:3001/produtos/${targetId}`).catch(() => {})
   })
 
   test('pre-populates form, edits a field, submits, and shows updated value', async ({ page }) => {
@@ -94,7 +94,7 @@ test.describe('Edit product', () => {
     await expect(page.getByText('Produto atualizado com sucesso!')).toBeVisible({ timeout: 5000 })
 
     // Navigate to list and verify updated value
-    await expect(page).toHaveURL('/', { timeout: 3000 })
+    await expect(page).toHaveURL((url) => url.pathname === '/', { timeout: 3000 })
     await page.getByRole('searchbox').fill(updatedName)
     await page.waitForTimeout(600)
     await expect(page.getByText(updatedName)).toBeVisible({ timeout: 5000 })

@@ -8,7 +8,7 @@ test.describe('Delete product', () => {
 
   test.beforeEach(async ({ request }) => {
     targetName = `E2E Delete ${timestamp()}`
-    const res = await request.post('http://localhost:3001/produtos', {
+    const res = await request.post('http://127.0.0.1:3001/produtos', {
       data: { nome: targetName, categoria: 'Acessorios', preco: 30, estoque: 1, ativo: true },
     })
     const created = await res.json() as { id: number }
@@ -17,7 +17,7 @@ test.describe('Delete product', () => {
 
   test.afterEach(async ({ request }) => {
     // Safety clean-up in case test didn't delete it
-    await request.delete(`http://localhost:3001/produtos/${targetId}`).catch(() => {})
+    await request.delete(`http://127.0.0.1:3001/produtos/${targetId}`).catch(() => {})
   })
 
   test('confirmation dialog appears and confirming removes the product from the list', async ({ page }) => {
@@ -34,7 +34,7 @@ test.describe('Delete product', () => {
     await expect(page.getByText('Tem certeza que deseja excluir este produto?')).toBeVisible({ timeout: 3000 })
 
     // Confirm deletion
-    await page.locator('.confirm-dialog').getByText('Excluir').click()
+    await page.locator('.confirm-dialog').getByRole('button', { name: 'Excluir', exact: true }).click()
 
     // Product is gone from the list
     await expect(page.getByText(targetName)).not.toBeVisible({ timeout: 5000 })

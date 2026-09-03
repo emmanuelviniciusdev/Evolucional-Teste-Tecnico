@@ -17,7 +17,7 @@ const wrap = (ui: React.ReactElement) =>
 
 test('shows loading spinner while fetching', () => {
   vi.mocked(useProductsModule.useProducts).mockReturnValue({
-    data: [], total: 0, loading: true, error: null,
+    data: [], total: 0, loading: true, error: null, refetch: vi.fn(),
   })
   vi.mocked(useDeleteModule.useDeleteProduct).mockReturnValue(noopDelete)
   wrap(<Home />)
@@ -26,7 +26,7 @@ test('shows loading spinner while fetching', () => {
 
 test('shows error message when fetch fails', () => {
   vi.mocked(useProductsModule.useProducts).mockReturnValue({
-    data: [], total: 0, loading: false, error: 'Erro de rede',
+    data: [], total: 0, loading: false, error: 'Erro de rede', refetch: vi.fn(),
   })
   vi.mocked(useDeleteModule.useDeleteProduct).mockReturnValue(noopDelete)
   wrap(<Home />)
@@ -36,7 +36,7 @@ test('shows error message when fetch fails', () => {
 
 test('shows empty state when no products are returned', () => {
   vi.mocked(useProductsModule.useProducts).mockReturnValue({
-    data: [], total: 0, loading: false, error: null,
+    data: [], total: 0, loading: false, error: null, refetch: vi.fn(),
   })
   vi.mocked(useDeleteModule.useDeleteProduct).mockReturnValue(noopDelete)
   wrap(<Home />)
@@ -51,6 +51,7 @@ test('renders product rows when data is available', () => {
     total: 1,
     loading: false,
     error: null,
+    refetch: vi.fn(),
   })
   vi.mocked(useDeleteModule.useDeleteProduct).mockReturnValue(noopDelete)
   wrap(<Home />)
@@ -66,6 +67,7 @@ test('cancel on delete dialog does NOT call deleteProduct', () => {
     total: 1,
     loading: false,
     error: null,
+    refetch: vi.fn(),
   })
   vi.mocked(useDeleteModule.useDeleteProduct).mockReturnValue({
     deleteProduct: del, loading: false, error: null,
@@ -80,7 +82,7 @@ test('cancel on delete dialog does NOT call deleteProduct', () => {
   // Open dialog via the row's aria-label button
   fireEvent.click(getByRole('button', { name: 'Excluir Teclado' }))
   // Cancel via the dialog's cancel button
-  fireEvent.click(getByRole('button', { name: 'Cancelar' }))
+  fireEvent.click(getByRole('button', { name: 'Cancelar', hidden: true }))
 
   expect(del).not.toHaveBeenCalled()
 })

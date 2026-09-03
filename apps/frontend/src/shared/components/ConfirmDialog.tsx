@@ -25,20 +25,19 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     const dialog = dialogRef.current
     if (!dialog) return
     if (open) {
-      if (typeof dialog.showModal === 'function') dialog.showModal()
-    } else {
-      if (typeof dialog.close === 'function') dialog.close()
+      if (!dialog.open && typeof dialog.showModal === 'function') dialog.showModal()
+    } else if (dialog.open && typeof dialog.close === 'function') {
+      dialog.close()
     }
   }, [open])
 
   return (
     <dialog
       ref={dialogRef}
-      open={open}
       className="confirm-dialog"
       aria-labelledby="dialog-title"
       aria-describedby="dialog-desc"
-      onClose={onCancel}
+      onCancel={onCancel}
     >
       <h3 id="dialog-title">{title}</h3>
       <p id="dialog-desc">{message}</p>

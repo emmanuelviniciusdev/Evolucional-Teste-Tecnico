@@ -16,7 +16,7 @@ test.describe('Product listing', () => {
     await expect(page.locator('table tbody tr').first()).toBeVisible({ timeout: 10000 })
 
     const nextBtn = page.getByRole('button', { name: 'Próxima página' })
-    if (await nextBtn.isVisible()) {
+    if (await nextBtn.isVisible() && await nextBtn.isEnabled()) {
       await nextBtn.click()
       await expect(page).toHaveURL(/page=2/)
       // Page 2 rows are visible
