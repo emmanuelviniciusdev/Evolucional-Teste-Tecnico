@@ -14,7 +14,7 @@ Um resumo de como cada requisito obrigatório foi atendido, para facilitar a rev
 | **Matrícula** (`POST /api/matriculas`) com regras de negócio | `MatriculaService` valida turma com vaga, aluno ativo e matrícula não duplicada; o insert e o decremento de `VagasDisponiveis` rodam na **mesma transaction**. |
 | **Relatório** (`GET /api/relatorios/alunos-por-turma`) via SQL | `RelatorioRepository` calcula tudo com `LEFT JOIN` + `GROUP BY`, sem montar o resultado em memória. |
 | **Status HTTP corretos** (200/201, 400, 404, 409) | Exceções de domínio (`ValidationException`, `NotFoundException`, `ConflictException`) são traduzidas por um filtro; validação nunca devolve 500. |
-| **Projeto em camadas**, sem regra de negócio no controller | Camadas `Api` → `Aplicacao` → `Dominio` ← `Infraestrutura`, com Autofac na composição. |
+| **Projeto em camadas**, sem regra de negócio no controller | **Clean Architecture** com `Api` → `Aplicacao` → `Dominio` ← `Infraestrutura` e Autofac na composição; os controllers são finos e delegam para os services. Detalhes na seção [Arquitetura](#arquitetura). |
 
 Itens bônus do enunciado, todos implementados:
 
@@ -32,6 +32,17 @@ Nada ficou de fora dos requisitos obrigatórios ou dos bônus.
 - Redis via StackExchange.Redis (`ICacheService`)
 - Autofac para composition
 - Swashbuckle 5.6.0 para o Swagger UI
+
+## Arquitetura
+
+O backend segue **Clean Architecture** (também chamada de Onion Architecture): as dependências apontam sempre para dentro, em direção ao domínio, que não conhece nenhum detalhe de infrastructure. São quatro projects na solution `Escola.sln`:
+
+- **`Escola.Dominio`** — o núcleo, que não referencia nenhum outro project. Concentra as entities (`Aluno`, `Turma`, `Matricula`), as exceptions de domínio (`ValidationException`, `NotFoundException`, `ConflictException`) e — o ponto central do padrão — as **interfaces** que o domínio define para o mundo externo: `IAlunoRepository`, `ITurmaRepository`, `IMatriculaRepository`, `IRelatorioRepository`, `ICacheService` e `IConnectionFactory`.
+- **`Escola.Aplicacao`** — os casos de uso; referencia apenas o `Dominio`. Os services (`AlunoService`, `TurmaService`, `MatriculaService`, `RelatorioService`) orquestram as regras dependendo só das interfaces do domínio. Por exemplo, o construtor de `MatriculaService` recebe `IConnectionFactory`, `IAlunoRepository`, `ITurmaRepository`, `IMatriculaRepository` e `ICacheService` — nenhuma referência a SQL Server, Dapper ou Redis.
+- **`Escola.Infraestrutura`** — os detalhes técnicos; referencia apenas o `Dominio` e **implementa** as interfaces dele: `AlunoRepository : IAlunoRepository` (Dapper + SQL escrito à mão), `RedisCacheService : ICacheService` (StackExchange.Redis) e `ConnectionFactory : IConnectionFactory`. É aqui — e só aqui — que a tecnologia concreta aparece. Trocar o Redis por um cache em memória, por exemplo, é escrever outra implementação de `ICacheService` sem tocar em domínio nem aplicação (Dependency Inversion).
+- **`Escola.Api`** — a borda HTTP e o **composition root**. Os controllers são finos e só delegam para os services (ex.: `MatriculasController` recebe `MatriculaService` e chama `CriarAsync`, sem regra de negócio). É o único project que referencia a `Infraestrutura`, e apenas para montar o grafo de dependências: `Startup.BuildContainer` registra `ApplicationModule` e `InfrastructureModule` no Autofac, ligando cada interface do domínio à sua implementation concreta.
+
+Resumindo o fluxo de dependência: `Api → Aplicacao → Dominio ← Infraestrutura`. O domínio fica no centro sem depender de nada; a infrastructure e a API dependem dele, nunca o contrário — o que mantém as regras de negócio isoladas de framework, banco e cache.
 
 ## Demonstração
 
