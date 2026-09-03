@@ -1,9 +1,15 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Routes, Route, Link } from 'react-router-dom'
 import Home from '../pages/Home'
+import ProductDetail from '../pages/ProductDetail'
+import ProductForm from '../pages/ProductForm'
 import NotFound from '../pages/NotFound'
 
 const AppShell: React.FC = () => {
+  useEffect(() => {
+    document.documentElement.lang = 'pt-BR'
+  }, [])
+
   return (
     <>
       <a href="#main" className="skip-link">Ir para o conteúdo</a>
@@ -18,18 +24,17 @@ const AppShell: React.FC = () => {
       <main id="main" role="main" className="container">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/produtos/novo" element={<Home />} />
-          <Route path="/produtos/:id" element={<Home />} />
-          <Route path="/produtos/:id/editar" element={<Home />} />
+          <Route path="/produtos/novo" element={<ProductForm />} />
+          <Route path="/produtos/:id" element={<ProductDetail />} />
+          <Route path="/produtos/:id/editar" element={<ProductForm />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <footer className="site-footer container" role="contentinfo">
-        <small>Fundação do app — telas serão implementadas em mudanças posteriores.</small>
+        <small>Nexo — Gestão de Produtos</small>
       </footer>
     </>
   )
 }
 
 export default AppShell
-

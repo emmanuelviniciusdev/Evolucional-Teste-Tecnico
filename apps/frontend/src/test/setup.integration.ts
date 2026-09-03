@@ -1,10 +1,11 @@
 import { setupServer } from 'msw/node'
-import { handlers } from './msw/handlers'
-import 'whatwg-fetch'
+import { handlers, resetHandlerData } from './msw/handlers'
 
 const server = setupServer(...handlers)
 
 beforeAll(() => server.listen({ onUnhandledRequest: 'warn' }))
-afterEach(() => server.resetHandlers())
+afterEach(() => {
+  server.resetHandlers()
+  resetHandlerData()
+})
 afterAll(() => server.close())
-

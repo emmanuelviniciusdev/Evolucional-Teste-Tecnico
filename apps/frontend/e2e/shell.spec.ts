@@ -7,4 +7,3 @@ test('shell is accessible and in pt-BR', async ({ page }) => {
   const results = await new AxeBuilder({ page }).analyze()
   expect(results.violations.length).toBe(0)
 })
-
