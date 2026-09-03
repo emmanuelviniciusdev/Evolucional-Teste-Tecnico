@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Escola — Alunos e matrículas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+  <header class="border-b border-slate-200 bg-white">
+    <div class="mx-auto max-w-5xl px-4 py-6">
+      <h1 class="text-2xl font-semibold text-slate-900">Escola</h1>
+      <p class="mt-1 text-sm text-slate-600">Tela de demonstração para cadastro de alunos e matrículas.</p>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-5xl space-y-8 px-4 py-8">
+    <div id="banner" class="hidden rounded-lg border px-4 py-3 text-sm" role="status"></div>
+
+    <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm" aria-labelledby="titulo-alunos">
+      <h2 id="titulo-alunos" class="text-xl font-semibold text-slate-900">Alunos</h2>
+
+      <form id="form-filtro" class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
+        <label class="flex-1 text-sm font-medium text-slate-700">
+          Filtrar por nome
+          <input id="filtro-nome" type="search" name="nome" placeholder="Ex.: ana"
+                 class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+        </label>
+        <button type="submit"
+                class="rounded-md bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-900">
+          Filtrar
+        </button>
+      </form>
+
+      <div class="mt-4 overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+          <thead class="bg-slate-50 text-slate-600">
+            <tr>
+              <th class="px-3 py-2 font-medium">Nome</th>
+              <th class="px-3 py-2 font-medium">E-mail</th>
+              <th class="px-3 py-2 font-medium">Data de nascimento</th>
+              <th class="px-3 py-2 font-medium">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-alunos" class="divide-y divide-slate-100"></tbody>
+        </table>
+        <p id="alunos-vazio" class="hidden px-3 py-6 text-sm text-slate-600">Nenhum aluno encontrado.</p>
+      </div>
+
+      <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p id="alunos-total" class="text-sm text-slate-600"></p>
+        <div class="flex gap-2">
+          <button type="button" id="btn-anterior"
+                  class="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm disabled:cursor-not-allowed disabled:opacity-50">
+            Anterior
+          </button>
+          <button type="button" id="btn-proxima"
+                  class="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm disabled:cursor-not-allowed disabled:opacity-50">
+            Próxima
+          </button>
+        </div>
+      </div>
+
+      <form id="form-aluno" class="mt-8 space-y-4 border-t border-slate-100 pt-6">
+        <h3 id="titulo-form-aluno" class="text-base font-semibold text-slate-900">Novo aluno</h3>
+        <input type="hidden" id="aluno-id" />
+        <div class="grid gap-4 sm:grid-cols-3">
+          <label class="text-sm font-medium text-slate-700">
+            Nome
+            <input id="aluno-nome" name="nome" type="text" maxlength="120" required placeholder="Nome completo"
+                   class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+          </label>
+          <label class="text-sm font-medium text-slate-700">
+            E-mail
+            <input id="aluno-email" name="email" type="text" maxlength="120" required placeholder="nome@dominio.com"
+                   class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+          </label>
+          <label class="text-sm font-medium text-slate-700">
+            Data de nascimento
+            <input id="aluno-nascimento" name="dataNascimento" type="date" required
+                   class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+          </label>
+        </div>
+        <div class="flex gap-2">
+          <button type="submit" id="btn-salvar"
+                  class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
+            Salvar
+          </button>
+          <button type="button" id="btn-cancelar"
+                  class="hidden rounded-md border border-slate-300 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm" aria-labelledby="titulo-matriculas">
+      <h2 id="titulo-matriculas" class="text-xl font-semibold text-slate-900">Matrículas</h2>
+      <p class="mt-1 text-sm text-slate-600">Associe um aluno a uma turma com vagas restantes.</p>
+
+      <form id="form-matricula" class="mt-4 grid gap-4 sm:grid-cols-3 sm:items-end">
+        <label class="text-sm font-medium text-slate-700">
+          Aluno
+          <select id="select-aluno" required
+                  class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+            <option value="">Selecione um aluno</option>
+          </select>
+        </label>
+        <label class="text-sm font-medium text-slate-700">
+          Turma
+          <select id="select-turma" required
+                  class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+            <option value="">Selecione uma turma</option>
+          </select>
+        </label>
+        <button type="submit"
+                class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
+          Matricular
+        </button>
+      </form>
+
+      <h3 class="mt-8 text-base font-semibold text-slate-900">Alunos por turma</h3>
+      <div class="mt-3 overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+          <thead class="bg-slate-50 text-slate-600">
+            <tr>
+              <th class="px-3 py-2 font-medium">Turma</th>
+              <th class="px-3 py-2 font-medium">Quantidade de alunos</th>
+              <th class="px-3 py-2 font-medium">Vagas restantes</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-relatorio" class="divide-y divide-slate-100"></tbody>
+        </table>
+        <p id="relatorio-vazio" class="hidden px-3 py-6 text-sm text-slate-600">Nenhuma turma encontrada.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var TAMANHO_PAGINA = 10;
+      var TAMANHO_SELECT = 100;
+
+      var banner = document.getElementById("banner");
+      var formFiltro = document.getElementById("form-filtro");
+      var filtroNome = document.getElementById("filtro-nome");
+      var tabelaAlunos = document.getElementById("tabela-alunos");
+      var alunosVazio = document.getElementById("alunos-vazio");
+      var alunosTotal = document.getElementById("alunos-total");
+      var btnAnterior = document.getElementById("btn-anterior");
+      var btnProxima = document.getElementById("btn-proxima");
+      var formAluno = document.getElementById("form-aluno");
+      var tituloFormAluno = document.getElementById("titulo-form-aluno");
+      var alunoId = document.getElementById("aluno-id");
+      var alunoNome = document.getElementById("aluno-nome");
+      var alunoEmail = document.getElementById("aluno-email");
+      var alunoNascimento = document.getElementById("aluno-nascimento");
+      var btnCancelar = document.getElementById("btn-cancelar");
+      var formMatricula = document.getElementById("form-matricula");
+      var selectAluno = document.getElementById("select-aluno");
+      var selectTurma = document.getElementById("select-turma");
+      var tabelaRelatorio = document.getElementById("tabela-relatorio");
+      var relatorioVazio = document.getElementById("relatorio-vazio");
+
+      var estado = {
+        pagina: 1,
+        total: 0,
+        nome: ""
+      };
+
+      function mostrarBanner(tipo, texto) {
+        banner.textContent = texto;
+        banner.className = tipo === "sucesso"
+          ? "rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
+          : "rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800";
+      }
+
+      function esconderBanner() {
+        banner.textContent = "";
+        banner.className = "hidden rounded-lg border px-4 py-3 text-sm";
+      }
+
+      function formatarData(valor) {
+        if (!valor) {
+          return "";
+        }
+        var texto = String(valor);
+        var match = texto.match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (!match) {
+          return texto;
+        }
+        return match[3] + "/" + match[2] + "/" + match[1];
+      }
+
+      function dataParaInput(valor) {
+        if (!valor) {
+          return "";
+        }
+        var match = String(valor).match(/^(\d{4}-\d{2}-\d{2})/);
+        return match ? match[1] : "";
+      }
+
+      function rotuloPeriodo(periodo) {
+        if (periodo === "Manha") {
+          return "Manhã";
+        }
+        return periodo || "";
+      }
+
+      function rotuloVaga(quantidade) {
+        return quantidade === 1 ? "1 vaga" : quantidade + " vagas";
+      }
+
+      async function lerErro(response) {
+        try {
+          var data = await response.json();
+          if (data && typeof data.error === "string" && data.error) {
+            return data.error;
+          }
+        } catch (e) {
+        }
+        return "Não foi possível concluir a operação.";
+      }
+
+      async function requestJson(url, opcoes) {
+        var opcoesFinais = opcoes || {};
+        var headers = { Accept: "application/json" };
+        if (opcoesFinais.body) {
+          headers["Content-Type"] = "application/json";
+        }
+        var response;
+        try {
+          response = await fetch(url, {
+            method: opcoesFinais.method || "GET",
+            headers: headers,
+            body: opcoesFinais.body
+          });
+        } catch (e) {
+          throw new Error("Não foi possível conectar à API.");
+        }
+        return response;
+      }
+
+      function urlAlunos(pagina, tamanhoPagina, nome) {
+        var params = new URLSearchParams();
+        params.set("pagina", String(pagina));
+        params.set("tamanhoPagina", String(tamanhoPagina));
+        if (nome) {
+          params.set("nome", nome);
+        }
+        return "/api/alunos?" + params.toString();
+      }
+
+      function limparTabela(tbody) {
+        while (tbody.firstChild) {
+          tbody.removeChild(tbody.firstChild);
+        }
+      }
+
+      function definirModoFormulario(id) {
+        if (id) {
+          alunoId.value = String(id);
+          tituloFormAluno.textContent = "Editar aluno";
+          btnCancelar.classList.remove("hidden");
+        } else {
+          alunoId.value = "";
+          tituloFormAluno.textContent = "Novo aluno";
+          btnCancelar.classList.add("hidden");
+        }
+      }
+
+      function resetarFormularioAluno() {
+        formAluno.reset();
+        definirModoFormulario(null);
+      }
+
+      function validarCamposAluno() {
+        if (!alunoNome.value.trim()) {
+          mostrarBanner("erro", "Nome é obrigatório.");
+          return false;
+        }
+        if (!alunoEmail.value.trim()) {
+          mostrarBanner("erro", "E-mail é obrigatório.");
+          return false;
+        }
+        if (!alunoNascimento.value) {
+          mostrarBanner("erro", "Data de nascimento é obrigatória.");
+          return false;
+        }
+        return true;
+      }
+
+      async function carregarAlunos() {
+        var response = await requestJson(urlAlunos(estado.pagina, TAMANHO_PAGINA, estado.nome));
+        if (!response.ok) {
+          mostrarBanner("erro", await lerErro(response));
+          return;
+        }
+        var data = await response.json();
+        estado.pagina = data.pagina;
+        estado.total = data.total;
+        var alunos = data.alunos || [];
+
+        limparTabela(tabelaAlunos);
+        if (alunos.length === 0) {
+          alunosVazio.classList.remove("hidden");
+        } else {
+          alunosVazio.classList.add("hidden");
+          alunos.forEach(function (aluno) {
+            var tr = document.createElement("tr");
+
+            var tdNome = document.createElement("td");
+            tdNome.className = "px-3 py-2";
+            tdNome.textContent = aluno.nome;
+            tr.appendChild(tdNome);
+
+            var tdEmail = document.createElement("td");
+            tdEmail.className = "px-3 py-2";
+            tdEmail.textContent = aluno.email;
+            tr.appendChild(tdEmail);
+
+            var tdNascimento = document.createElement("td");
+            tdNascimento.className = "px-3 py-2";
+            tdNascimento.textContent = formatarData(aluno.dataNascimento);
+            tr.appendChild(tdNascimento);
+
+            var tdAcoes = document.createElement("td");
+            tdAcoes.className = "px-3 py-2";
+            var acoes = document.createElement("div");
+            acoes.className = "flex gap-2";
+
+            var btnEditar = document.createElement("button");
+            btnEditar.type = "button";
+            btnEditar.className = "text-indigo-600 hover:underline";
+            btnEditar.textContent = "Editar";
+            btnEditar.addEventListener("click", function () {
+              definirModoFormulario(aluno.id);
+              alunoNome.value = aluno.nome;
+              alunoEmail.value = aluno.email;
+              alunoNascimento.value = dataParaInput(aluno.dataNascimento);
+              alunoNome.focus();
+            });
+
+            var btnExcluir = document.createElement("button");
+            btnExcluir.type = "button";
+            btnExcluir.className = "text-red-600 hover:underline";
+            btnExcluir.textContent = "Excluir";
+            btnExcluir.addEventListener("click", function () {
+              excluirAluno(aluno);
+            });
+
+            acoes.appendChild(btnEditar);
+            acoes.appendChild(btnExcluir);
+            tdAcoes.appendChild(acoes);
+            tr.appendChild(tdAcoes);
+            tabelaAlunos.appendChild(tr);
+          });
+        }
+
+        var inicio = estado.total === 0 ? 0 : ((estado.pagina - 1) * TAMANHO_PAGINA) + 1;
+        var fim = Math.min(estado.pagina * TAMANHO_PAGINA, estado.total);
+        alunosTotal.textContent = estado.total === 0
+          ? "Total: 0"
+          : "Página " + estado.pagina + " · " + inicio + " a " + fim + " de " + estado.total;
+
+        btnAnterior.disabled = estado.pagina <= 1;
+        btnProxima.disabled = estado.pagina * TAMANHO_PAGINA >= estado.total;
+      }
+
+      async function carregarTodosAlunos() {
+        var pagina = 1;
+        var todos = [];
+        var total = 0;
+        do {
+          var response = await requestJson(urlAlunos(pagina, TAMANHO_SELECT, ""));
+          if (!response.ok) {
+            throw new Error(await lerErro(response));
+          }
+          var data = await response.json();
+          total = data.total;
+          (data.alunos || []).forEach(function (aluno) {
+            todos.push(aluno);
+          });
+          pagina += 1;
+        } while (todos.length < total);
+        return todos;
+      }
+
+      function preencherSelectAlunos(alunos) {
+        while (selectAluno.options.length > 1) {
+          selectAluno.remove(1);
+        }
+        alunos.forEach(function (aluno) {
+          var option = document.createElement("option");
+          option.value = String(aluno.id);
+          option.textContent = aluno.nome;
+          selectAluno.appendChild(option);
+        });
+      }
+
+      async function carregarTurmas() {
+        var response = await requestJson("/api/turmas");
+        if (!response.ok) {
+          mostrarBanner("erro", await lerErro(response));
+          return;
+        }
+        var turmas = await response.json();
+        while (selectTurma.options.length > 1) {
+          selectTurma.remove(1);
+        }
+        (turmas || []).forEach(function (turma) {
+          var option = document.createElement("option");
+          option.value = String(turma.id);
+          option.textContent = turma.nome + " — " + rotuloPeriodo(turma.periodo) + " (" + rotuloVaga(turma.vagasDisponiveis) + ")";
+          option.disabled = turma.vagasDisponiveis <= 0;
+          selectTurma.appendChild(option);
+        });
+      }
+
+      async function carregarRelatorio() {
+        var response = await requestJson("/api/relatorios/alunos-por-turma");
+        if (!response.ok) {
+          mostrarBanner("erro", await lerErro(response));
+          return;
+        }
+        var linhas = await response.json();
+        limparTabela(tabelaRelatorio);
+        if (!linhas || linhas.length === 0) {
+          relatorioVazio.classList.remove("hidden");
+          return;
+        }
+        relatorioVazio.classList.add("hidden");
+        linhas.forEach(function (linha) {
+          var tr = document.createElement("tr");
+          var tdTurma = document.createElement("td");
+          tdTurma.className = "px-3 py-2";
+          tdTurma.textContent = linha.nomeTurma;
+          var tdQtd = document.createElement("td");
+          tdQtd.className = "px-3 py-2";
+          tdQtd.textContent = String(linha.quantidadeAlunos);
+          var tdVagas = document.createElement("td");
+          tdVagas.className = "px-3 py-2";
+          tdVagas.textContent = String(linha.vagasRestantes);
+          tr.appendChild(tdTurma);
+          tr.appendChild(tdQtd);
+          tr.appendChild(tdVagas);
+          tabelaRelatorio.appendChild(tr);
+        });
+      }
+
+      async function atualizarSelectsMatricula() {
+        var alunos = await carregarTodosAlunos();
+        preencherSelectAlunos(alunos);
+        await carregarTurmas();
+      }
+
+      async function excluirAluno(aluno) {
+        var confirmado = window.confirm("Deseja realmente excluir o aluno " + aluno.nome + "? O cadastro será desativado.");
+        if (!confirmado) {
+          return;
+        }
+        var response = await requestJson("/api/alunos/" + aluno.id, { method: "DELETE" });
+        if (!response.ok) {
+          mostrarBanner("erro", await lerErro(response));
+          return;
+        }
+        mostrarBanner("sucesso", "Aluno excluído com sucesso.");
+        resetarFormularioAluno();
+        if (estado.pagina > 1 && (estado.total - 1) <= (estado.pagina - 1) * TAMANHO_PAGINA) {
+          estado.pagina -= 1;
+        }
+        await carregarAlunos();
+        await atualizarSelectsMatricula();
+      }
+
+      formFiltro.addEventListener("submit", function (event) {
+        event.preventDefault();
+        estado.nome = filtroNome.value.trim();
+        estado.pagina = 1;
+        esconderBanner();
+        carregarAlunos().catch(function (erro) {
+          mostrarBanner("erro", erro.message);
+        });
+      });
+
+      btnAnterior.addEventListener("click", function () {
+        if (estado.pagina <= 1) {
+          return;
+        }
+        estado.pagina -= 1;
+        carregarAlunos().catch(function (erro) {
+          mostrarBanner("erro", erro.message);
+        });
+      });
+
+      btnProxima.addEventListener("click", function () {
+        if (estado.pagina * TAMANHO_PAGINA >= estado.total) {
+          return;
+        }
+        estado.pagina += 1;
+        carregarAlunos().catch(function (erro) {
+          mostrarBanner("erro", erro.message);
+        });
+      });
+
+      formAluno.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        if (!validarCamposAluno()) {
+          return;
+        }
+        var corpo = JSON.stringify({
+          nome: alunoNome.value.trim(),
+          email: alunoEmail.value.trim(),
+          dataNascimento: alunoNascimento.value
+        });
+        var id = alunoId.value;
+        var response = await requestJson(id ? "/api/alunos/" + id : "/api/alunos", {
+          method: id ? "PUT" : "POST",
+          body: corpo
+        });
+        if (!response.ok) {
+          mostrarBanner("erro", await lerErro(response));
+          return;
+        }
+        mostrarBanner("sucesso", id ? "Aluno atualizado com sucesso." : "Aluno cadastrado com sucesso.");
+        resetarFormularioAluno();
+        await carregarAlunos();
+        await atualizarSelectsMatricula();
+      });
+
+      btnCancelar.addEventListener("click", function () {
+        resetarFormularioAluno();
+      });
+
+      formMatricula.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        if (!selectAluno.value || !selectTurma.value) {
+          mostrarBanner("erro", "Selecione um aluno e uma turma.");
+          return;
+        }
+        var response = await requestJson("/api/matriculas", {
+          method: "POST",
+          body: JSON.stringify({
+            alunoId: Number(selectAluno.value),
+            turmaId: Number(selectTurma.value)
+          })
+        });
+        if (!response.ok) {
+          mostrarBanner("erro", await lerErro(response));
+          return;
+        }
+        mostrarBanner("sucesso", "Matrícula realizada com sucesso.");
+        formMatricula.reset();
+        await carregarTurmas();
+        await carregarRelatorio();
+      });
+
+      async function iniciar() {
+        try {
+          await carregarAlunos();
+          await atualizarSelectsMatricula();
+          await carregarRelatorio();
+        } catch (erro) {
+          mostrarBanner("erro", erro.message);
+        }
+      }
+
+      iniciar();
+    })();
+  </script>
+</body>
+</html>

@@ -78,6 +78,10 @@ curl http://localhost:5000/api/health
 
 Abra [http://localhost:5000/swagger](http://localhost:5000/swagger) (UI) ou `http://localhost:5000/swagger/docs/v1` (documento OpenAPI). As rotas do enunciado têm description em inglês (en-US) e schemas de request/response (propriedades, tipos e campos).
 
+## Tela de demonstração
+
+Depois de `make api-run`, abra [http://localhost:5000/ui](http://localhost:5000/ui) no navegador. A página HTML é servida na mesma origem da API e permite listar, cadastrar, editar e excluir alunos, criar matrículas e ver o relatório de alunos por turma. Se `/ui` não abrir, use [http://localhost:5000/ui/index.html](http://localhost:5000/ui/index.html).
+
 ## Endpoints do enunciado
 
 O JSON é camelCase. Bodies de erro usam `{ "error": "<mensagem em pt-BR>" }` com HTTP 400 (validation), 404 (registro ausente) ou 409 (regra de negócio).

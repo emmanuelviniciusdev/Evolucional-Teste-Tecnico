@@ -119,6 +119,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="ui\index.html" />
+    <Content Include="ui\web.config" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
