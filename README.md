@@ -1,8 +1,8 @@
-# Evolucional technical test
+# Teste técnico Evolucional
 
-School enrollment API on .NET Framework 4.8.
+API de matrícula escolar em .NET Framework 4.8.
 
-The runnable backend lives in [`apps/backend`](apps/backend). Follow [`apps/backend/README.md`](apps/backend/README.md) to restore packages, start SQL Server and Redis with Docker, run the Web API on Windows, open Swagger at [http://localhost:5000/swagger](http://localhost:5000/swagger), and call the assignment routes:
+O backend executável fica em [`apps/backend`](apps/backend). Siga [`apps/backend/README.md`](apps/backend/README.md) para restaurar os packages, subir SQL Server e Redis com Docker, rodar a Web API no Windows, abrir o Swagger em [http://localhost:5000/swagger](http://localhost:5000/swagger) e chamar as rotas do enunciado:
 
 - `GET/POST /api/alunos`, `GET/PUT/DELETE /api/alunos/{id}`
 - `GET /api/turmas`
@@ -10,7 +10,7 @@ The runnable backend lives in [`apps/backend`](apps/backend). Follow [`apps/back
 - `GET /api/relatorios/alunos-por-turma`
 - `GET /api/health`
 
-Example:
+Exemplo:
 
 ```bash
 curl http://localhost:5000/api/alunos

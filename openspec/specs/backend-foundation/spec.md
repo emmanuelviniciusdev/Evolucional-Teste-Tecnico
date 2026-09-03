@@ -78,7 +78,7 @@ The API SHALL expose `GET /api/health`. The path and JSON body MUST be en-US (`s
 
 ### Requirement: Language conventions
 
-Domain names, comments, and business messages in implementation MUST be written in pt-BR (`Aluno`, `Turma`, `Matricula`). Technical identifiers MUST be written in en-US (`IConnectionFactory`, `ICacheService`, `HealthService`, `HealthController`, `Create`, `GetAsync`). The health-check HTTP contract (`GET /api/health` and its JSON) MUST be en-US. Operator and developer documentation MUST be written in en-US.
+Domain names, comments, and business messages in implementation MUST be written in pt-BR (`Aluno`, `Turma`, `Matricula`). Technical identifiers MUST be written in en-US (`IConnectionFactory`, `ICacheService`, `HealthService`, `HealthController`, `Create`, `GetAsync`). The health-check HTTP contract (`GET /api/health` and its JSON) MUST be en-US. OpenSpec artifacts MUST be written in en-US. Operator and developer documentation (README and runbooks) MUST be written in pt-BR, keeping technical terms in English.
 
 #### Scenario: Domain is pt-BR and technical names are en-US
 
@@ -90,10 +90,10 @@ Domain names, comments, and business messages in implementation MUST be written 
 - **WHEN** a client calls the readiness endpoint
 - **THEN** the path is `/api/health` and JSON field names and status strings are English
 
-#### Scenario: Docs are en-US
+#### Scenario: Project docs are pt-BR; OpenSpec is en-US
 
-- **WHEN** a reviewer inspects README and other developer docs added in this change
-- **THEN** they are in English (United States)
+- **WHEN** a reviewer inspects README files and OpenSpec artifacts added in this change
+- **THEN** README and operator runbooks are in Brazilian Portuguese with technical terms in English, and OpenSpec specs remain in English (United States)
 
 ### Requirement: Unit and integration test projects
 

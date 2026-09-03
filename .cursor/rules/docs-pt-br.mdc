@@ -1,0 +1,26 @@
+---
+description: README e docs do projeto em pt-BR; OpenSpec permanece em inglês
+alwaysApply: true
+---
+
+# Idioma da documentação
+
+Documentação do **projeto** (README e runbooks de operador/desenvolvedor) DEVE ser escrita em **pt-BR**. Termos técnicos permanecem em inglês (`endpoint`, `cache`, `TTL`, `transaction`, `payload`, Docker, Redis, Swagger).
+
+Artifacts **OpenSpec** (`openspec/specs/`, `openspec/changes/`: `proposal.md`, `design.md`, `spec.md`, `tasks.md`) MUST permanecer em **en-US**.
+
+Não traduzir: identificadores (`ICacheService`, `GetAsync`), rotas (`/api/health`), contrato HTTP en-US do health (`status`, `healthy`, `unavailable`), enunciado em `Enunciado/`, nem texto Swagger (en-US).
+
+```markdown
+<!-- ❌ BAD — README -->
+The API runs on Windows. Start SQL Server and Redis with Docker.
+
+<!-- ✅ GOOD — README -->
+A API roda no Windows. Suba SQL Server e Redis com Docker.
+
+<!-- ❌ BAD — OpenSpec -->
+A API MUST expor `GET /api/turmas`.
+
+<!-- ✅ GOOD — OpenSpec -->
+The API MUST expose `GET /api/turmas`.
+```

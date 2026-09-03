@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Defines how developers start SQL Server and Redis, run the API and tests, and follow English instructions without installing those services on the host OS.
+Defines how developers start SQL Server and Redis, run the API and tests, and follow pt-BR README instructions without installing those services on the host OS.
 
 ## Requirements
 
@@ -39,9 +39,9 @@ A Makefile MUST provide named targets that start and stop infrastructure, show s
 - **WHEN** a developer runs the unit-test target or the integration-test target on a Windows host with .NET Framework 4.8 and, for integration tests, with infrastructure up
 - **THEN** the corresponding test project executes without requiring ad-hoc MSBuild or vstest command lines
 
-### Requirement: English runbook
+### Requirement: pt-BR runbook
 
-`apps/backend/README.md` MUST be written in en-US and MUST explain what the API is, the stack, Windows requirement for building and running the host and tests, how to start Docker infrastructure, the `TesteEscola` connection string (API) and that `TesteEscola_Testes` / Redis db 1 are created and used only when integration tests run, that `make infra-up` always reseeds `TesteEscola` and flushes Redis db 0, how to run the API, how to run tests, how to call `GET /api/health`, how to open Swagger, and how to call the assignment endpoints (`/api/alunos`, `/api/turmas`, `/api/matriculas`, `/api/relatorios/alunos-por-turma`). If the SQL script was changed, the README MUST state what changed and why. The README MUST NOT require `make infra-reset` after a schema change. The root README MUST point at that runbook and MUST NOT claim that assignment endpoints are unimplemented.
+`apps/backend/README.md` MUST be written in pt-BR (technical terms in English) and MUST explain what the API is, the stack, Windows requirement for building and running the host and tests, how to start Docker infrastructure, the `TesteEscola` connection string (API) and that `TesteEscola_Testes` / Redis db 1 are created and used only when integration tests run, that `make infra-up` always reseeds `TesteEscola` and flushes Redis db 0, how to run the API, how to run tests, how to call `GET /api/health`, how to open Swagger, and how to call the assignment endpoints (`/api/alunos`, `/api/turmas`, `/api/matriculas`, `/api/relatorios/alunos-por-turma`). If the SQL script was changed, the README MUST state what changed and why. The README MUST NOT require `make infra-reset` after a schema change. The root README MUST point at that runbook and MUST NOT claim that assignment endpoints are unimplemented.
 
 #### Scenario: README is enough to run locally
 
