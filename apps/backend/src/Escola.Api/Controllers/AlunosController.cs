@@ -7,7 +7,7 @@ using Escola.Aplicacao.Alunos;
 namespace Escola.Api.Controllers
 {
     /// <summary>
-    /// Paginated aluno CRUD. DELETE is a logical deactivation (Ativo = false); the row remains readable.
+    /// Paginated aluno CRUD. DELETE is a logical deactivation (Ativo = false); GET omits inactive alunos.
     /// </summary>
     [RoutePrefix("api/alunos")]
     public class AlunosController : ApiController
@@ -20,10 +20,10 @@ namespace Escola.Api.Controllers
         }
 
         /// <summary>
-        /// Lists alunos with optional case-insensitive name filter.
+        /// Lists active alunos with optional case-insensitive name filter.
         /// Query parameters: nome, pagina (default 1), tamanhoPagina (default 10, max 100).
-        /// The payload includes the page, the matching total, and the pagination values used.
-        /// Inactive alunos are included. Invalid pagination returns HTTP 400.
+        /// The payload includes the page, the matching total of active alunos, and the pagination values used.
+        /// Inactive alunos are omitted. Invalid pagination returns HTTP 400.
         /// </summary>
         [HttpGet]
         [Route("")]
@@ -34,7 +34,7 @@ namespace Escola.Api.Controllers
         }
 
         /// <summary>
-        /// Returns an aluno by id, including inactive ones. HTTP 404 when the id does not exist.
+        /// Returns an active aluno by id. HTTP 404 when the id does not exist or the aluno is inactive.
         /// </summary>
         [HttpGet]
         [Route("{id:int}")]
@@ -70,7 +70,7 @@ namespace Escola.Api.Controllers
 
         /// <summary>
         /// Logical delete: sets Ativo to false and returns HTTP 204. Idempotent when already inactive.
-        /// HTTP 404 when the id does not exist. GET still returns the aluno with ativo false.
+        /// HTTP 404 when the id does not exist. Later GET list and GET by id omit the aluno.
         /// </summary>
         [HttpDelete]
         [Route("{id:int}")]

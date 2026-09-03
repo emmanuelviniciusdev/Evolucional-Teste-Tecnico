@@ -66,6 +66,22 @@ namespace Escola.Testes.Unitarios.Alunos
             await _repository.DidNotReceive().InsertAsync(Arg.Any<Aluno>());
         }
 
+        [Fact]
+        public async Task ObterPorIdAsync_InactiveAluno_ThrowsNotFoundException()
+        {
+            _repository.GetByIdAsync(4).Returns(new Aluno
+            {
+                Id = 4,
+                Nome = "Diego Ferreira",
+                Ativo = false
+            });
+
+            Func<Task> act = () => _sut.ObterPorIdAsync(4);
+
+            await act.Should().ThrowAsync<NotFoundException>()
+                .WithMessage("Aluno não encontrado.");
+        }
+
         [Theory]
         [InlineData(0)]
         [InlineData(101)]

@@ -7,10 +7,10 @@ namespace Escola.Aplicacao.Alunos
     /// </summary>
     public class ListaAlunosDto
     {
-        /// <summary>Alunos on the current page (active and inactive).</summary>
+        /// <summary>Active alunos on the current page.</summary>
         public IReadOnlyList<AlunoDto> Alunos { get; set; }
 
-        /// <summary>Total records matching the filter, not only this page.</summary>
+        /// <summary>Total active records matching the filter, not only this page.</summary>
         public int Total { get; set; }
 
         /// <summary>1-based page that was returned.</summary>

@@ -8,17 +8,22 @@ Lets operators list, inspect, create, update, and logically deactivate alunos th
 
 ### Requirement: Paginated aluno list with optional name filter
 
-The API SHALL expose `GET /api/alunos`. The list MUST be paginated. Query parameter `nome` MUST optionally filter by name using a case-insensitive partial match. Query parameters `pagina` and `tamanhoPagina` MUST control the page (1-based) and page size. When omitted, `pagina` MUST default to 1 and `tamanhoPagina` MUST default to 10. `tamanhoPagina` MUST be rejected when less than 1 or greater than 100. The JSON body MUST include the page of alunos (active and inactive), the total number of records matching the filter (not only the page size), and the pagination values used. A successful list MUST return HTTP 200. Invalid pagination MUST return HTTP 400.
+The API SHALL expose `GET /api/alunos`. The list MUST be paginated. Query parameter `nome` MUST optionally filter by name using a case-insensitive partial match. Query parameters `pagina` and `tamanhoPagina` MUST control the page (1-based) and page size. When omitted, `pagina` MUST default to 1 and `tamanhoPagina` MUST default to 10. `tamanhoPagina` MUST be rejected when less than 1 or greater than 100. The JSON body MUST include the page of active alunos, the total number of active records matching the filter (not only the page size), and the pagination values used. Inactive alunos MUST be omitted from the items and from `total`. A successful list MUST return HTTP 200. Invalid pagination MUST return HTTP 400.
 
 #### Scenario: First page without filter
 
 - **WHEN** a client calls `GET /api/alunos` with no query parameters
-- **THEN** the API returns HTTP 200 with the first page of alunos, `pagina` 1, `tamanhoPagina` 10, and `total` equal to the number of alunos in the database
+- **THEN** the API returns HTTP 200 with the first page of active alunos, `pagina` 1, `tamanhoPagina` 10, and `total` equal to the number of active alunos in the database
 
 #### Scenario: Filter by name
 
-- **WHEN** a client calls `GET /api/alunos?nome=ana` and at least one aluno name contains "ana" regardless of case
-- **THEN** the API returns HTTP 200 whose items all match that filter and whose `total` is the count of matching alunos, not the unfiltered table size
+- **WHEN** a client calls `GET /api/alunos?nome=ana` and at least one active aluno name contains "ana" regardless of case
+- **THEN** the API returns HTTP 200 whose items all match that filter and whose `total` is the count of matching active alunos, not the unfiltered table size
+
+#### Scenario: Inactive alunos are omitted
+
+- **WHEN** a client calls `GET /api/alunos` and the database contains inactive alunos
+- **THEN** the response items and `total` include only active alunos
 
 #### Scenario: Invalid page size
 
@@ -27,16 +32,21 @@ The API SHALL expose `GET /api/alunos`. The list MUST be paginated. Query parame
 
 ### Requirement: Get aluno by id
 
-The API SHALL expose `GET /api/alunos/{id}`. When the aluno exists (active or inactive), the response MUST be HTTP 200 with that aluno. When no row exists for the id, the response MUST be HTTP 404.
+The API SHALL expose `GET /api/alunos/{id}`. When the aluno exists and is active, the response MUST be HTTP 200 with that aluno. When no row exists for the id, or the aluno is inactive, the response MUST be HTTP 404.
 
 #### Scenario: Existing aluno
 
-- **WHEN** a client calls `GET /api/alunos/{id}` for an id that exists
+- **WHEN** a client calls `GET /api/alunos/{id}` for an active aluno
 - **THEN** the API returns HTTP 200 with that aluno's fields, including `ativo`
 
 #### Scenario: Missing aluno
 
 - **WHEN** a client calls `GET /api/alunos/{id}` for an id that does not exist
+- **THEN** the API returns HTTP 404
+
+#### Scenario: Inactive aluno
+
+- **WHEN** a client calls `GET /api/alunos/{id}` for an inactive aluno
 - **THEN** the API returns HTTP 404
 
 ### Requirement: Create aluno
@@ -74,12 +84,12 @@ The API SHALL expose `PUT /api/alunos/{id}`. The body MUST include `nome`, `emai
 
 ### Requirement: Logical delete aluno
 
-The API SHALL expose `DELETE /api/alunos/{id}`. The operation MUST set `ativo` to false and MUST NOT delete the database row. A successful deactivation MUST return HTTP 204. When the id does not exist, the response MUST be HTTP 404. When the aluno is already inactive, the response MUST be HTTP 204 and the row MUST remain inactive (idempotent). After a logical delete, `GET /api/alunos/{id}` MUST still return the aluno with `ativo` false.
+The API SHALL expose `DELETE /api/alunos/{id}`. The operation MUST set `ativo` to false and MUST NOT delete the database row. A successful deactivation MUST return HTTP 204. When the id does not exist, the response MUST be HTTP 404. When the aluno is already inactive, the response MUST be HTTP 204 and the row MUST remain inactive (idempotent). After a logical delete, `GET /api/alunos/{id}` MUST return HTTP 404 and `GET /api/alunos` MUST NOT include that aluno.
 
 #### Scenario: Deactivate active aluno
 
 - **WHEN** a client deletes an active aluno
-- **THEN** the API returns HTTP 204, the row still exists, and a later get returns `ativo` false
+- **THEN** the API returns HTTP 204, the row still exists, a later get by id returns HTTP 404, and a later list does not include that aluno
 
 #### Scenario: Delete missing aluno
 

@@ -93,7 +93,7 @@ curl -X PUT http://localhost:5000/api/alunos/1 -H "Content-Type: application/jso
 curl -X DELETE http://localhost:5000/api/alunos/1
 ```
 
-`dataNascimento` is `YYYY-MM-DD` only. Email must be a complete address (local-part with or without a dot). DELETE is a logical deactivation (`Ativo = 0`); GET still returns the aluno.
+`dataNascimento` is `YYYY-MM-DD` only. Email must be a complete address (local-part with or without a dot). DELETE is a logical deactivation (`Ativo = 0`); GET list and GET by id omit inactive alunos (HTTP 404 by id). The row stays in the database so matrícula can still reject an inactive aluno with HTTP 409.
 
 ### Turmas
 

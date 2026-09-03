@@ -55,7 +55,7 @@ namespace Escola.Aplicacao.Alunos
         public async Task<AlunoDto> ObterPorIdAsync(int id)
         {
             var aluno = await _alunoRepository.GetByIdAsync(id).ConfigureAwait(false);
-            if (aluno == null)
+            if (aluno == null || !aluno.Ativo)
             {
                 throw new NotFoundException("Aluno não encontrado.");
             }
@@ -82,7 +82,8 @@ namespace Escola.Aplicacao.Alunos
             var atualizado = ValidarEscrita(dto);
             atualizado.Id = id;
             await _alunoRepository.UpdateAsync(atualizado).ConfigureAwait(false);
-            return await ObterPorIdAsync(id).ConfigureAwait(false);
+            var persistido = await _alunoRepository.GetByIdAsync(id).ConfigureAwait(false);
+            return ToDto(persistido);
         }
 
         public async Task ExcluirLogicamenteAsync(int id)

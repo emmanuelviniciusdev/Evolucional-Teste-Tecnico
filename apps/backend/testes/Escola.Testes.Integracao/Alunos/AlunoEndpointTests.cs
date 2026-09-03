@@ -29,8 +29,14 @@ namespace Escola.Testes.Integracao.Alunos
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
                 Assert.Equal(1, (int)json["pagina"]);
                 Assert.Equal(10, (int)json["tamanhoPagina"]);
-                Assert.Equal(8, (int)json["total"]);
-                Assert.Equal(8, json["alunos"].Value<JArray>().Count);
+                Assert.Equal(7, (int)json["total"]);
+                var alunos = json["alunos"].Value<JArray>();
+                Assert.Equal(7, alunos.Count);
+                foreach (var aluno in alunos)
+                {
+                    Assert.True((bool)aluno["ativo"]);
+                    Assert.NotEqual(4, (int)aluno["id"]);
+                }
             }
         }
 
@@ -45,6 +51,30 @@ namespace Escola.Testes.Integracao.Alunos
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
                 Assert.Equal(1, (int)json["total"]);
                 Assert.Contains("ana", ((string)json["alunos"][0]["nome"]), StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
+        [Fact]
+        public async Task GetAlunos_FilterByInactiveName_ReturnsEmpty()
+        {
+            using (var server = TestServerExtensions.CreateApi())
+            {
+                var response = await server.GetJsonAsync("/api/alunos?nome=diego");
+                var json = Assert.IsType<JObject>(await response.ReadJsonAsync());
+
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                Assert.Equal(0, (int)json["total"]);
+                Assert.Empty(json["alunos"].Value<JArray>());
+            }
+        }
+
+        [Fact]
+        public async Task GetAluno_InactiveId_ReturnsNotFound()
+        {
+            using (var server = TestServerExtensions.CreateApi())
+            {
+                var response = await server.GetJsonAsync("/api/alunos/4");
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             }
         }
 
@@ -134,7 +164,7 @@ namespace Escola.Testes.Integracao.Alunos
         }
 
         [Fact]
-        public async Task DeleteAluno_LogicalDelete_StillGettableAsInactive()
+        public async Task DeleteAluno_LogicalDelete_OmittedFromGetEndpoints()
         {
             using (var server = TestServerExtensions.CreateApi())
             {
@@ -142,9 +172,16 @@ namespace Escola.Testes.Integracao.Alunos
                 Assert.Equal(HttpStatusCode.NoContent, delete.StatusCode);
 
                 var get = await server.GetJsonAsync("/api/alunos/1");
-                var json = Assert.IsType<JObject>(await get.ReadJsonAsync());
-                Assert.Equal(HttpStatusCode.OK, get.StatusCode);
-                Assert.False((bool)json["ativo"]);
+                Assert.Equal(HttpStatusCode.NotFound, get.StatusCode);
+
+                var list = await server.GetJsonAsync("/api/alunos");
+                var json = Assert.IsType<JObject>(await list.ReadJsonAsync());
+                Assert.Equal(HttpStatusCode.OK, list.StatusCode);
+                Assert.Equal(6, (int)json["total"]);
+                foreach (var aluno in json["alunos"].Value<JArray>())
+                {
+                    Assert.NotEqual(1, (int)aluno["id"]);
+                }
             }
         }
 

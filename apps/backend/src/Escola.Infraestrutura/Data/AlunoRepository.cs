@@ -22,7 +22,8 @@ namespace Escola.Infraestrutura.Data
             const string sql = @"
 SELECT Id, Nome, Email, DataNascimento, Ativo, DataCadastro
 FROM dbo.Aluno
-WHERE (@Nome IS NULL OR Nome LIKE '%' + @Nome + '%')
+WHERE Ativo = 1
+AND (@Nome IS NULL OR Nome LIKE '%' + @Nome + '%')
 ORDER BY Nome, Id
 OFFSET @Offset ROWS FETCH NEXT @Take ROWS ONLY;";
 
@@ -40,7 +41,8 @@ OFFSET @Offset ROWS FETCH NEXT @Take ROWS ONLY;";
             const string sql = @"
 SELECT COUNT(1)
 FROM dbo.Aluno
-WHERE (@Nome IS NULL OR Nome LIKE '%' + @Nome + '%');";
+WHERE Ativo = 1
+AND (@Nome IS NULL OR Nome LIKE '%' + @Nome + '%');";
 
             using (var connection = _connectionFactory.Create())
             {
