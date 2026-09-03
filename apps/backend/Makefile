@@ -21,6 +21,7 @@ restore:
 infra-up:
 	$(COMPOSE) up -d sqlserver redis --wait
 	$(COMPOSE) run --rm sqlserver-init
+	$(COMPOSE) exec -T redis redis-cli -n 0 FLUSHDB
 
 infra-down:
 	$(COMPOSE) down

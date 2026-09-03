@@ -5,6 +5,9 @@ using Escola.Aplicacao.Health;
 
 namespace Escola.Api.Controllers
 {
+    /// <summary>
+    /// Readiness probe for SQL Server and Redis.
+    /// </summary>
     [RoutePrefix("api/health")]
     public class HealthController : ApiController
     {
@@ -15,6 +18,9 @@ namespace Escola.Api.Controllers
             _healthService = healthService;
         }
 
+        /// <summary>
+        /// Returns HTTP 200 when SQL Server and Redis are reachable, otherwise HTTP 503.
+        /// </summary>
         [HttpGet]
         [Route("")]
         public async Task<IHttpActionResult> Get()

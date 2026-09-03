@@ -32,7 +32,6 @@ services:
     volumes:
       - ./sql/init.sql:/init.sql:ro
       - ./sql/wait-and-init.sh:/wait-and-init.sh:ro
-      - sql-init-marker:/initialized
     entrypoint: ["bash", "/wait-and-init.sh"]
     restart: "no"
 
@@ -48,4 +47,3 @@ services:
 
 volumes:
   sqlserver-data:
-  sql-init-marker:

@@ -5,8 +5,13 @@
     <RootNamespace>Escola.Aplicacao</RootNamespace>
     <AssemblyName>Escola.Aplicacao</AssemblyName>
   </PropertyGroup>
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.5.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Escola.Dominio\Escola.Dominio.csproj" />

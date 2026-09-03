@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using System.Reflection;
 using System.Web.Http;
 using Autofac;
@@ -5,8 +7,10 @@ using Autofac.Integration.WebApi;
 using Escola.Aplicacao;
 using Escola.Api.Filters;
 using Escola.Infraestrutura;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Owin;
+using Swashbuckle.Application;
 
 [assembly: Microsoft.Owin.OwinStartup(typeof(Escola.Api.Startup))]
 
@@ -32,7 +36,29 @@ namespace Escola.Api
             config.Formatters.Remove(config.Formatters.XmlFormatter);
             config.Formatters.JsonFormatter.SerializerSettings.ContractResolver =
                 new CamelCasePropertyNamesContractResolver();
+            config.Formatters.JsonFormatter.SerializerSettings.DateParseHandling = DateParseHandling.None;
             config.Filters.Add(new JsonExceptionFilter());
+            ConfigureSwagger(config);
+        }
+
+        private static void ConfigureSwagger(HttpConfiguration config)
+        {
+            config.EnableSwagger(c =>
+            {
+                c.SingleApiVersion("v1", "Escola Enrollment API")
+                    .Description("School enrollment API: alunos, turmas, matrículas, and SQL reports.");
+                var bin = AppDomain.CurrentDomain.BaseDirectory;
+                IncludeXmlCommentsIfPresent(c, Path.Combine(bin, "Escola.Api.xml"));
+                IncludeXmlCommentsIfPresent(c, Path.Combine(bin, "Escola.Aplicacao.xml"));
+            }).EnableSwaggerUi();
+        }
+
+        private static void IncludeXmlCommentsIfPresent(SwaggerDocsConfig config, string path)
+        {
+            if (File.Exists(path))
+            {
+                config.IncludeXmlComments(path);
+            }
         }
 
         private static IContainer BuildContainer(HttpConfiguration config)

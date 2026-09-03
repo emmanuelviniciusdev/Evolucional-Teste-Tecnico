@@ -1,14 +1,21 @@
 using System.Net;
 using System.Threading.Tasks;
 using Escola.Api;
+using Escola.Testes.Integracao.Infra;
 using Microsoft.Owin.Testing;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Escola.Testes.Integracao.Health
 {
+    [Collection("EnrollmentApi")]
     public class HealthEndpointTests
     {
+        public HealthEndpointTests(EnrollmentDatabaseFixture fixture)
+        {
+            fixture.Reset();
+        }
+
         [Fact]
         public async Task GetHealth_WhenDependenciesAreReachable_ReturnsOk()
         {

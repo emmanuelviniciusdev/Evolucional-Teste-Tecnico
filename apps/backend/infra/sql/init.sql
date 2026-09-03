@@ -34,7 +34,8 @@ CREATE TABLE dbo.Matricula (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     AlunoId INT NOT NULL FOREIGN KEY REFERENCES dbo.Aluno(Id),
     TurmaId INT NOT NULL FOREIGN KEY REFERENCES dbo.Turma(Id),
-    DataMatricula DATETIME NOT NULL DEFAULT GETDATE()
+    DataMatricula DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT UQ_Matricula_Aluno_Turma UNIQUE (AlunoId, TurmaId)
 );
 GO
 
