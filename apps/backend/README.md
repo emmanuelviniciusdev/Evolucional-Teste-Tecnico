@@ -33,7 +33,7 @@ make api-run
 
 `make infra-up` sempre reaplica o schema e as linhas de sample em `TesteEscola` e faz flush do Redis db 0. **Não** é necessário `make infra-reset` depois de uma mudança de schema ou seed.
 
-`make api-run` sobe a infrastructure e em seguida o IIS Express em [http://localhost:5000](http://localhost:5000). Sobrescreva o path do IIS Express se precisar:
+`make api-run` compila a API, sobe a infrastructure e inicia o IIS Express em [http://localhost:5000](http://localhost:5000). Sobrescreva o path do IIS Express se precisar:
 
 ```bash
 make api-run IIS_EXPRESS="C:\Program Files\IIS Express\iisexpress.exe"
@@ -140,7 +140,7 @@ make test               # unit e em seguida integration
 | `infra-down` | Para os containers |
 | `infra-logs` | Acompanha os logs do Compose |
 | `infra-reset` | `down -v` e depois `infra-up` (wipe de volume; opcional) |
-| `api-run` | `infra-up` e depois IIS Express na porta 5000 |
+| `api-run` | `infra-up`, build da API e IIS Express na porta 5000 |
 | `test-unit` | Restore, MSBuild e execução do project de testes unitários |
 | `test-integration` | `infra-up` e depois execução do project de testes de integration |
 | `test` | Testes unitários e em seguida testes de integration |

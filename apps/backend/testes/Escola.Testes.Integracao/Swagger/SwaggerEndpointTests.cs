@@ -17,13 +17,11 @@ namespace Escola.Testes.Integracao.Swagger
         {
             using (var server = TestServerExtensions.CreateApi())
             {
-                var ui = await server.HttpClient.GetAsync("/swagger/ui/index");
-                if (ui.StatusCode != HttpStatusCode.OK)
-                {
-                    ui = await server.HttpClient.GetAsync("/swagger");
-                }
-
+                var ui = await server.HttpClient.GetAsync("/swagger");
                 Assert.Equal(HttpStatusCode.OK, ui.StatusCode);
+
+                var root = await server.HttpClient.GetAsync("/");
+                Assert.Equal(HttpStatusCode.OK, root.StatusCode);
             }
         }
 

@@ -9,7 +9,7 @@ MSBUILD ?= msbuild
 DOTNET ?= dotnet
 IIS_EXPRESS ?= C:\Program Files\IIS Express\iisexpress.exe
 API_PORT ?= 5000
-API_PHYSICAL_PATH := $(CURDIR)/src/Escola.Api
+POWERSHELL ?= powershell
 UNIT_PROJECT := testes/Escola.Testes.Unitarios/Escola.Testes.Unitarios.csproj
 INTEGRATION_PROJECT := testes/Escola.Testes.Integracao/Escola.Testes.Integracao.csproj
 
@@ -34,7 +34,8 @@ infra-reset:
 	$(MAKE) infra-up
 
 api-run: infra-up
-	"$(IIS_EXPRESS)" /path:"$(API_PHYSICAL_PATH)" /port:$(API_PORT)
+	$(MSBUILD) src/Escola.Api/Escola.Api.csproj /t:Rebuild /p:Configuration=Debug /restore /p:UseSharedCompilation=false
+	$(POWERSHELL) -NoProfile -ExecutionPolicy Bypass -File infra/run-iisexpress.ps1 -Port $(API_PORT) -IisExpress "$(IIS_EXPRESS)"
 
 test-unit: restore
 	$(MSBUILD) $(UNIT_PROJECT) /p:Configuration=Debug /restore

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Net.Http;
 using System.Reflection;
 using System.Web.Http;
 using Autofac;
@@ -7,6 +8,7 @@ using Autofac.Integration.WebApi;
 using Escola.Aplicacao;
 using Escola.Api.Filters;
 using Escola.Infraestrutura;
+using Microsoft.Owin.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Owin;
@@ -21,16 +23,14 @@ namespace Escola.Api
         public void Configuration(IAppBuilder app)
         {
             var config = new HttpConfiguration();
-            ConfigureWebApi(config);
-            var container = BuildContainer(config);
-            config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
-
+            var container = ConfigureHttp(config);
             app.UseAutofacMiddleware(container);
             app.UseAutofacWebApi(config);
             app.UseWebApi(config);
+            app.UseStageMarker(PipelineStage.MapHandler);
         }
 
-        private static void ConfigureWebApi(HttpConfiguration config)
+        public static IContainer ConfigureHttp(HttpConfiguration config)
         {
             config.MapHttpAttributeRoutes();
             config.Formatters.Remove(config.Formatters.XmlFormatter);
@@ -39,6 +39,10 @@ namespace Escola.Api
             config.Formatters.JsonFormatter.SerializerSettings.DateParseHandling = DateParseHandling.None;
             config.Filters.Add(new JsonExceptionFilter());
             ConfigureSwagger(config);
+
+            var container = BuildContainer(config);
+            config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
+            return container;
         }
 
         private static void ConfigureSwagger(HttpConfiguration config)
@@ -51,6 +55,18 @@ namespace Escola.Api
                 IncludeXmlCommentsIfPresent(c, Path.Combine(bin, "Escola.Api.xml"));
                 IncludeXmlCommentsIfPresent(c, Path.Combine(bin, "Escola.Aplicacao.xml"));
             }).EnableSwaggerUi();
+
+            config.Routes.MapHttpRoute(
+                name: "swagger_root",
+                routeTemplate: "",
+                defaults: null,
+                constraints: null,
+                handler: new RedirectHandler(SwaggerRootUrl, "swagger/ui/index"));
+        }
+
+        private static string SwaggerRootUrl(HttpRequestMessage request)
+        {
+            return request.RequestUri.GetLeftPart(UriPartial.Authority);
         }
 
         private static void IncludeXmlCommentsIfPresent(SwaggerDocsConfig config, string path)
