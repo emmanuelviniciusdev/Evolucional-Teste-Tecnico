@@ -15,7 +15,7 @@ const AppShell: React.FC = () => {
       <a href="#main" className="skip-link">Ir para o conteúdo</a>
       <header className="site-header" role="banner">
         <div className="container">
-          <h1>Nexo — Catálogo</h1>
+          <h1>Painel de Produtos</h1>
           <nav aria-label="Principal">
             <Link to="/">Catálogo</Link>
           </nav>
@@ -31,7 +31,7 @@ const AppShell: React.FC = () => {
         </Routes>
       </main>
       <footer className="site-footer container" role="contentinfo">
-        <small>Nexo — Gestão de Produtos</small>
+        <small>Painel de Produtos</small>
       </footer>
     </>
   )

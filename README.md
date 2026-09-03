@@ -42,11 +42,13 @@ curl http://localhost:5000/api/turmas
 curl -X POST http://localhost:5000/api/matriculas -H "Content-Type: application/json" -d "{\"alunoId\":1,\"turmaId\":2}"
 ```
 
-## Frontend (fundação)
+## Frontend
 
-Há uma fundação de SPA React em `apps/frontend` criada para o teste prático de frontend. Ela é independente do backend .NET e usa `json-server` com o `db.json` fornecido para desenvolvimento local.
+Em [`apps/frontend`](apps/frontend) está a solução do teste prático de front-end: um painel de gerenciamento de produtos em **React 19 + TypeScript** com Vite, React Router e a API fake do `json-server` sobre o `db.json` fornecido. Ele é independente do backend .NET.
 
-Para começar com o frontend:
+O painel cobre todos os requisitos do enunciado — listagem com busca, filtro por categoria, paginação real e estados de carregando/erro/vazio; detalhe do produto; criação e edição com validação por campo e feedback de sucesso; e exclusão com confirmação — além dos bônus (TypeScript, debounce na busca, testes com Vitest/RTL e Playwright, e estado refletido na URL).
+
+Para rodar:
 
 ```bash
 cd apps/frontend
@@ -54,5 +56,5 @@ npm install
 npm run dev:all   # inicia json-server em :3001 e Vite em :5173
 ```
 
-Playwright e2e, Vitest e lint estão configurados; detalhes e scripts estão em `apps/frontend/README.md`.
+O passo a passo completo, a tabela de requisitos e os scripts de teste estão em [`apps/frontend/README.md`](apps/frontend/README.md).
 
