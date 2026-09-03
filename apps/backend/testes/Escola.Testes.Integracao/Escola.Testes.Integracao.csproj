@@ -31,4 +31,12 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Escola.Api\Escola.Api.csproj" />
   </ItemGroup>
+  <Target Name="CopyXmlDocumentation" AfterTargets="Build">
+    <PropertyGroup>
+      <ApiXml>$(MSBuildThisFileDirectory)..\..\src\Escola.Api\bin\Escola.Api.xml</ApiXml>
+      <AplicacaoXml>$(MSBuildThisFileDirectory)..\..\src\Escola.Aplicacao\bin\$(Configuration)\net48\Escola.Aplicacao.xml</AplicacaoXml>
+    </PropertyGroup>
+    <Copy SourceFiles="$(ApiXml)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" Condition="Exists('$(ApiXml)')" />
+    <Copy SourceFiles="$(AplicacaoXml)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" Condition="Exists('$(AplicacaoXml)')" />
+  </Target>
 </Project>

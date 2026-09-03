@@ -13,7 +13,7 @@ namespace Escola.Api.Filters
             {
                 context.Response = context.Request.CreateResponse(
                     HttpStatusCode.BadRequest,
-                    new { error = context.Exception.Message });
+                    new ErrorResponse { Error = context.Exception.Message });
                 return;
             }
 
@@ -21,7 +21,7 @@ namespace Escola.Api.Filters
             {
                 context.Response = context.Request.CreateResponse(
                     HttpStatusCode.NotFound,
-                    new { error = context.Exception.Message });
+                    new ErrorResponse { Error = context.Exception.Message });
                 return;
             }
 
@@ -29,13 +29,13 @@ namespace Escola.Api.Filters
             {
                 context.Response = context.Request.CreateResponse(
                     HttpStatusCode.Conflict,
-                    new { error = context.Exception.Message });
+                    new ErrorResponse { Error = context.Exception.Message });
                 return;
             }
 
             context.Response = context.Request.CreateResponse(
                 HttpStatusCode.InternalServerError,
-                new { error = "An unexpected error occurred." });
+                new ErrorResponse { Error = "An unexpected error occurred." });
         }
     }
 }

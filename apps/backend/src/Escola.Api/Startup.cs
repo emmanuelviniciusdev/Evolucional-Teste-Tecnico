@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
@@ -7,6 +8,7 @@ using Autofac;
 using Autofac.Integration.WebApi;
 using Escola.Aplicacao;
 using Escola.Api.Filters;
+using Escola.Api.Swagger;
 using Escola.Infraestrutura;
 using Microsoft.Owin.Extensions;
 using Newtonsoft.Json;
@@ -51,9 +53,13 @@ namespace Escola.Api
             {
                 c.SingleApiVersion("v1", "Escola Enrollment API")
                     .Description("School enrollment API: alunos, turmas, matrículas, and SQL reports.");
-                var bin = AppDomain.CurrentDomain.BaseDirectory;
-                IncludeXmlCommentsIfPresent(c, Path.Combine(bin, "Escola.Api.xml"));
-                IncludeXmlCommentsIfPresent(c, Path.Combine(bin, "Escola.Aplicacao.xml"));
+                foreach (var xmlPath in DistinctExistingXmlCommentPaths())
+                {
+                    c.IncludeXmlComments(xmlPath);
+                }
+
+                c.OperationFilter<CopySummaryToDescriptionFilter>();
+                c.SchemaFilter<IsoDateOnlySchemaFilter>();
             }).EnableSwaggerUi();
 
             config.Routes.MapHttpRoute(
@@ -69,11 +75,56 @@ namespace Escola.Api
             return request.RequestUri.GetLeftPart(UriPartial.Authority);
         }
 
-        private static void IncludeXmlCommentsIfPresent(SwaggerDocsConfig config, string path)
+        private static IEnumerable<string> DistinctExistingXmlCommentPaths()
         {
-            if (File.Exists(path))
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var candidate in XmlCommentCandidates())
             {
-                config.IncludeXmlComments(path);
+                if (!File.Exists(candidate))
+                {
+                    continue;
+                }
+
+                var fullPath = Path.GetFullPath(candidate);
+                if (seen.Add(fullPath))
+                {
+                    yield return fullPath;
+                }
+            }
+        }
+
+        private static IEnumerable<string> XmlCommentCandidates()
+        {
+            var fileNames = new[] { "Escola.Api.xml", "Escola.Aplicacao.xml" };
+            foreach (var root in XmlCommentRoots())
+            {
+                if (string.IsNullOrWhiteSpace(root))
+                {
+                    continue;
+                }
+
+                foreach (var fileName in fileNames)
+                {
+                    yield return Path.Combine(root, fileName);
+                }
+            }
+        }
+
+        private static IEnumerable<string> XmlCommentRoots()
+        {
+            yield return AppDomain.CurrentDomain.BaseDirectory;
+            yield return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bin");
+
+            var apiDirectory = Path.GetDirectoryName(typeof(Startup).Assembly.Location);
+            if (!string.IsNullOrEmpty(apiDirectory))
+            {
+                yield return apiDirectory;
+            }
+
+            var aplicacaoDirectory = Path.GetDirectoryName(typeof(ApplicationModule).Assembly.Location);
+            if (!string.IsNullOrEmpty(aplicacaoDirectory))
+            {
+                yield return aplicacaoDirectory;
             }
         }
 

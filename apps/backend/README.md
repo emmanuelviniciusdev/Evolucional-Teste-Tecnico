@@ -76,7 +76,7 @@ curl http://localhost:5000/api/health
 
 ## Swagger
 
-Abra [http://localhost:5000/swagger](http://localhost:5000/swagger) (UI) ou `http://localhost:5000/swagger/docs/v1` (documento OpenAPI). As rotas do enunciado e os schemas de request/response estão documentados em pt-BR, com termos técnicos em inglês.
+Abra [http://localhost:5000/swagger](http://localhost:5000/swagger) (UI) ou `http://localhost:5000/swagger/docs/v1` (documento OpenAPI). As rotas do enunciado têm description em inglês (en-US) e schemas de request/response (propriedades, tipos e campos).
 
 ## Endpoints do enunciado
 
