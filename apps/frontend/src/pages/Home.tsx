@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useProducts } from '../shared/hooks/useProducts'
 import { useDeleteProduct } from '../shared/hooks/useDeleteProduct'
@@ -29,13 +29,12 @@ const Home: React.FC = () => {
   const [inputValue, setInputValue] = useState(urlQ)
   const debouncedSearch = useDebounce(inputValue, 300)
 
-  // Skip URL sync on the very first render (value already matches the URL)
-  const mountedRef = useRef(false)
+  // Push the debounced search term into the URL (resetting to page 1) only when
+  // it actually differs from what's already there. Guarding on `urlQ` keeps this
+  // from clobbering the page back to 1 when other params change and React Router
+  // hands us a fresh `setSearchParams` identity (e.g. clicking the next-page arrow).
   useEffect(() => {
-    if (!mountedRef.current) {
-      mountedRef.current = true
-      return
-    }
+    if (debouncedSearch === urlQ) return
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev)
@@ -46,7 +45,7 @@ const Home: React.FC = () => {
       },
       { replace: true },
     )
-  }, [debouncedSearch, setSearchParams])
+  }, [debouncedSearch, urlQ, setSearchParams])
 
   const handleCategoriaChange = (value: string) => {
     setSearchParams(

@@ -1,14 +1,6 @@
 {
   "produtos": [
     {
-      "id": 1,
-      "nome": "Teclado Mecanico TKL",
-      "categoria": "Perifericos",
-      "preco": 349.9,
-      "estoque": 15,
-      "ativo": true
-    },
-    {
       "id": 2,
       "nome": "Mouse Gamer 16000dpi",
       "categoria": "Perifericos",
@@ -175,6 +167,14 @@
       "preco": 89.9,
       "estoque": 33,
       "ativo": false
+    },
+    {
+      "nome": "MacBook Neo - Citrus",
+      "categoria": "Acessorios",
+      "preco": 2999.9,
+      "estoque": 299,
+      "ativo": false,
+      "id": 23
     }
   ]
 }

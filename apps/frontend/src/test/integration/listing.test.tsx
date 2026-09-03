@@ -33,6 +33,22 @@ test('pagination controls appear when more than PAGE_SIZE products exist', async
   })
 })
 
+test('clicking next page advances to page 2 results (regression)', async () => {
+  // Page 1 shows ids 1-10 (Teclado…), page 2 shows only id 11 (Monitor 4K).
+  wrap()
+  await waitFor(() => expect(screen.getByText('Teclado')).not.toBeNull())
+
+  fireEvent.click(screen.getByRole('button', { name: 'Próxima página' }))
+
+  await waitFor(() => {
+    // Page 2 content is shown and page 1 content is gone — the effect must not
+    // bounce the page back to 1 when setSearchParams gets a fresh identity.
+    expect(screen.getByText('Monitor 4K')).not.toBeNull()
+    expect(screen.queryByText('Teclado')).toBeNull()
+    expect(screen.getByText(/Página 2 de/)).not.toBeNull()
+  })
+})
+
 test('search input triggers a filtered request', async () => {
   wrap()
   // Wait for initial load

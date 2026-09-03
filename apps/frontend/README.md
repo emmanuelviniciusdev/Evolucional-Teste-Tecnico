@@ -21,8 +21,22 @@ Itens bônus do enunciado, todos implementados:
 
 - **TypeScript bem usado** — o tipo `Produto` e o `ListResult<T>` da API são tipados e reaproveitados pelos hooks e páginas.
 - **Debounce na busca** — `useDebounce` aguarda 300 ms antes de disparar a chamada enquanto o usuário digita.
-- **Testes** — Vitest com React Testing Library e MSW (unit e integration), mais Playwright para e2e com checagem de acessibilidade (`axe`).
+- **Testes com React Testing Library** — Vitest com RTL e MSW cobrem as páginas e os hooks (unit e integration).
 - **React Router refletindo o estado na URL** — página, busca (`q`) e categoria ficam nos query params, então recarregar ou compartilhar o link preserva a tela.
+
+### Extras além do enunciado
+
+Dois pontos que o enunciado não pede, mas que foram incluídos como destaque:
+
+- **Testes end-to-end (Playwright)** — além dos testes de unidade/integração, uma suíte e2e roda o app de verdade no browser cobrindo os fluxos principais: listagem com total, paginação refletida na URL, busca e filtro, detalhe do produto, criação/edição no formulário e exclusão com confirmação (`e2e/`).
+- **Acessibilidade** — a interface foi construída com atenção a acessibilidade e é verificada automaticamente com o `axe` (nos testes e2e e de integração, exigindo zero violações). Os principais pontos:
+  - **Skip link** "Ir para o conteúdo" como primeiro elemento focável, levando direto ao `<main>` (`app/AppShell.tsx`).
+  - **Landmarks semânticos** — `header`/`banner`, `main`, `footer`/`contentinfo` e `nav` com `aria-label`.
+  - **Idioma declarado** — `<html lang="pt-BR">`, coerente com o conteúdo da UI.
+  - **Formulário acessível** — cada campo tem `<label>` associado, `aria-invalid` quando inválido e mensagens de erro com `role="alert"` ao lado do campo (`pages/ProductForm.tsx`).
+  - **Feedback por região viva** — mensagens de sucesso com `role="status"`, anunciadas por leitores de tela.
+  - **Controles com nome acessível** — busca, filtro por categoria, paginação (`Página anterior`/`Próxima página`) e o botão de excluir (`Excluir <nome>`) expõem `aria-label` (`pages/Home.tsx`).
+  - **Diálogo de confirmação** — usa o elemento `<dialog>` nativo com `showModal()`, `aria-labelledby` e `aria-describedby` (`shared/components/ConfirmDialog.tsx`).
 
 ## Stack
 
@@ -32,6 +46,12 @@ Itens bônus do enunciado, todos implementados:
 - React Hook Form para o formulário e a validação
 - json-server 0.17.4 como API fake (compatível com o enunciado)
 - Vitest + React Testing Library + MSW para testes; Playwright + axe para e2e
+
+## Demonstração
+
+O fluxo completo de CRUD: busca na listagem, cadastro de um produto com validação, visualização do detalhe, edição e exclusão com confirmação.
+
+![Demonstração do CRUD de produtos](docs/demonstracao-crud.gif)
 
 ## Pré-requisitos
 
